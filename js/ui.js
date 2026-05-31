@@ -1,5 +1,5 @@
 // ============================================
-// INTERFACE DO USUÁRIO (Tema, Navegação)
+// INTERFACE DO USUÁRIO (Tema, Navegação) - CORRIGIDO
 // ============================================
 const UI = {
   initTheme() {
@@ -35,32 +35,103 @@ const UI = {
         localStorage.setItem('theme', 'dark');
         toggle.classList.remove('on');
       }
-      Charts.render();
+      if (window.Charts) Charts.render();
     });
   },
   
   initNavigation() {
-    document.querySelectorAll('.sidebar .nav-item, .bottom-nav .bn-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const page = item.dataset.page;
-        this.showPage(page);
-        this.setActive(item);
-      });
+    console.log('🔄 Inicializando navegação...');
+    
+    // Sidebar navigation
+    document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+      item.removeEventListener('click', this.handleNavClick);
+      item.addEventListener('click', this.handleNavClick);
     });
     
-    document.getElementById('viewAllBtn')?.addEventListener('click', () => this.showPage('transactions'));
-    document.getElementById('newTransactionBtn')?.addEventListener('click', () => Transactions.openModal());
-    document.getElementById('newTransactionBtn2')?.addEventListener('click', () => Transactions.openModal());
-    document.getElementById('newGoalBtn')?.addEventListener('click', () => Goals.openModal());
+    // Bottom nav navigation
+    document.querySelectorAll('.bottom-nav .bn-item').forEach(item => {
+      item.removeEventListener('click', this.handleNavClick);
+      item.addEventListener('click', this.handleNavClick);
+    });
+    
+    // Botões especiais
+    const viewAllBtn = document.getElementById('viewAllBtn');
+    if (viewAllBtn) {
+      viewAllBtn.removeEventListener('click', this.handleViewAll);
+      viewAllBtn.addEventListener('click', this.handleViewAll);
+    }
+    
+    const newTransactionBtn = document.getElementById('newTransactionBtn');
+    if (newTransactionBtn) {
+      newTransactionBtn.removeEventListener('click', this.handleNewTransaction);
+      newTransactionBtn.addEventListener('click', this.handleNewTransaction);
+    }
+    
+    const newTransactionBtn2 = document.getElementById('newTransactionBtn2');
+    if (newTransactionBtn2) {
+      newTransactionBtn2.removeEventListener('click', this.handleNewTransaction);
+      newTransactionBtn2.addEventListener('click', this.handleNewTransaction);
+    }
+    
+    const newGoalBtn = document.getElementById('newGoalBtn');
+    if (newGoalBtn) {
+      newGoalBtn.removeEventListener('click', this.handleNewGoal);
+      newGoalBtn.addEventListener('click', this.handleNewGoal);
+    }
+  },
+  
+  handleNavClick(e) {
+    const item = e.currentTarget;
+    const page = item.dataset.page;
+    if (page) {
+      UI.showPage(page);
+      UI.setActive(item);
+    }
+  },
+  
+  handleViewAll() {
+    UI.showPage('transactions');
+    document.querySelectorAll('.sidebar .nav-item, .bottom-nav .bn-item').forEach(i => i.classList.remove('active'));
+    const targetItem = document.querySelector(`.sidebar .nav-item[data-page="transactions"], .bottom-nav .bn-item[data-page="transactions"]`);
+    if (targetItem) targetItem.classList.add('active');
+  },
+  
+  handleNewTransaction() {
+    if (window.Transactions) Transactions.openModal();
+  },
+  
+  handleNewGoal() {
+    if (window.Goals) Goals.openModal();
   },
   
   showPage(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(`page-${pageId}`).classList.add('active');
+    console.log('📄 Mostrando página:', pageId);
+    
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(page => {
+      page.classList.remove('active');
+    });
+    
+    const targetPage = document.getElementById(`page-${pageId}`);
+    if (targetPage) {
+      targetPage.classList.add('active');
+      console.log(`✅ Página ${pageId} ativada`);
+      
+      if (pageId === 'transactions' && window.Transactions) {
+        setTimeout(() => {
+          console.log('🔄 Re-renderizando transações...');
+          Transactions.renderTable();
+        }, 100);
+      }
+    } else {
+      console.error(`❌ Página ${pageId} não encontrada`);
+    }
   },
   
   setActive(activeItem) {
-    document.querySelectorAll('.sidebar .nav-item, .bottom-nav .bn-item').forEach(item => item.classList.remove('active'));
-    activeItem.classList.add('active');
+    document.querySelectorAll('.sidebar .nav-item, .bottom-nav .bn-item').forEach(item => {
+      item.classList.remove('active');
+    });
+    if (activeItem) activeItem.classList.add('active');
   }
 };

@@ -19,8 +19,14 @@ const Transactions = {
       AppState.transactions = data || [];
       console.log(`✅ ${AppState.transactions.length} transações carregadas`);
       
-      // Forçar a renderização
-      this.render();
+      const tbody = document.getElementById('transactionsList');
+      if (tbody) {
+        this.renderTable();
+      } else {
+        console.log('⏳ Elemento transactionsList não está disponível ainda, aguardando...');
+      }
+      
+      this.renderRecent();
       Dashboard.update();
       if (window.Charts) Charts.render();
       
@@ -37,82 +43,90 @@ const Transactions = {
   },
   
   renderTable() {
-    const tbody = document.getElementById('transactionsList');
-    if (!tbody) {
-      console.log('❌ Elemento transactionsList não encontrado');
-      return;
-    }
-    
-    if (!AppState.transactions || AppState.transactions.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="5" style="text-align:center;padding:60px 20px;color:var(--muted)">
-            <div style="font-size:48px;margin-bottom:16px">💳</div>
-            <div style="font-size:16px;margin-bottom:8px;font-weight:600">Nenhuma transação cadastrada</div>
-            <div style="font-size:12px">Clique em "+ Nova transação" para começar</div>
-            <button class="btn btn-primary" style="margin-top:20px" onclick="Transactions.openModal()">+ Nova Transação</button>
-          </td>
-        </tr>
-      `;
-      return;
-    }
-    
-    console.log(`📊 Renderizando ${AppState.transactions.length} transações na tabela`);
-    
-    tbody.innerHTML = AppState.transactions.map(t => {
-      const isIncome = t.type === 'in';
-      const sign = isIncome ? '+' : '-';
-      const color = isIncome ? 'var(--green)' : 'var(--red)';
-      const typeText = isIncome ? 'Receita' : 'Despesa';
+    setTimeout(() => {
+      const tbody = document.getElementById('transactionsList');
+      if (!tbody) {
+        console.log('⏳ Aguardando elemento transactionsList...');
+        setTimeout(() => this.renderTable(), 500);
+        return;
+      }
       
-      // Buscar conta associada
-      const account = AppState.accounts?.find(a => a.id === t.account_id);
-      const accountDisplay = account ? `${account.icon || '🏦'} ${Utils.escapeHtml(account.name)}` : '📌 Sem conta';
+      console.log('✅ Elemento transactionsList encontrado!');
       
-      return `
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:14px 12px;">
-            <div style="font-weight:600;">${Utils.escapeHtml(t.name)}</div>
-            <div style="font-size:11px; color:var(--muted); margin-top:4px;">${accountDisplay}</div>
-          </td>
-          <td style="padding:14px 12px;">
-            <span class="cat-tag" style="background:${isIncome ? 'var(--green2)' : 'var(--red2)'}; color:${color}">
-              ${typeText}
-            </span>
-          </td>
-          <td style="padding:14px 12px;">
-            <span style="background:var(--bg3); padding:4px 10px; border-radius:20px; font-size:12px;">
-              ${t.category || 'Sem categoria'}
-            </span>
-          </td>
-          <td style="padding:14px 12px; color:var(--muted);">${new Date(t.date).toLocaleDateString('pt-BR')}</td>
-          <td style="padding:14px 12px; font-family:'DM Mono',monospace; font-weight:700; color:${color};">
-            ${sign} R$ ${Utils.formatMoney(t.amount)}
-          </td>
-          <td style="padding:14px 12px; text-align:center;">
-            <div style="display:flex; gap:8px; justify-content:center;">
-              <button class="tx-btn tx-btn-edit" data-id="${t.id}" title="Editar" style="background:var(--bg3); border:none; cursor:pointer; padding:6px 12px; border-radius:8px;">✏️</button>
-              <button class="tx-btn tx-btn-del" data-id="${t.id}" title="Excluir" style="background:var(--bg3); border:none; cursor:pointer; padding:6px 12px; border-radius:8px;">🗑️</button>
-            </div>
-          </td>
-        </tr>
-      `;
-    }).join('');
-    
-    // Adicionar eventos
-    document.querySelectorAll('.tx-btn-edit').forEach(btn => {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        this.edit(btn.dataset.id);
-      };
-    });
-    
-    document.querySelectorAll('.tx-btn-del').forEach(btn => {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        this.delete(btn.dataset.id);
-      };
-    });
+      if (!AppState.transactions || AppState.transactions.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align:center;padding:60px 20px;color:var(--muted)">
+              <div style="font-size:48px;margin-bottom:16px">💳</div>
+              <div style="font-size:16px;margin-bottom:8px;font-weight:600">Nenhuma transação cadastrada</div>
+              <div style="font-size:12px">Clique em "+ Nova transação" para começar</div>
+              <button class="btn btn-primary" style="margin-top:20px" onclick="Transactions.openModal()">+ Nova Transação</button>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      let html = '';
+      
+      for (const t of AppState.transactions) {
+        const isIncome = t.type === 'in';
+        const sign = isIncome ? '+' : '-';
+        const color = isIncome ? 'var(--green)' : 'var(--red)';
+        const tipoText = isIncome ? '💰 Receita' : '💸 Despesa';
+        const tipoBg = isIncome ? 'var(--green2)' : 'var(--red2)';
+        
+        const account = AppState.accounts?.find(a => a.id === t.account_id);
+        const contaDisplay = account ? `${account.icon || '🏦'} ${account.name}` : '📌 Sem conta';
+        
+        html += `
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:14px 12px;">
+              <div style="font-weight:600;">${Utils.escapeHtml(t.name)}</div>
+              <div style="font-size:11px; color:var(--muted); margin-top:4px;">${contaDisplay}</div>
+            </td>
+            <td style="padding:14px 12px;">
+              <span style="background:${tipoBg}; color:${color}; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600;">
+                ${tipoText}
+              </span>
+            </td>
+            <td style="padding:14px 12px;">
+              <span style="background:var(--bg3); padding:4px 12px; border-radius:20px; font-size:12px;">
+                ${t.category || 'Sem categoria'}
+              </span>
+            </td>
+            <td style="padding:14px 12px; color:var(--muted);">${new Date(t.date).toLocaleDateString('pt-BR')}</td>
+            <td style="padding:14px 12px; font-family:'DM Mono',monospace; font-weight:700; color:${color}; font-size:16px;">
+              ${sign} R$ ${Utils.formatMoney(t.amount)}
+            </td>
+            <td style="padding:14px 12px; text-align:center;">
+              <div style="display:flex; gap:8px; justify-content:center;">
+                <button class="tx-btn tx-btn-edit" data-id="${t.id}" style="background:var(--bg3); border:none; cursor:pointer; padding:8px 12px; border-radius:8px;">✏️</button>
+                <button class="tx-btn tx-btn-del" data-id="${t.id}" style="background:var(--bg3); border:none; cursor:pointer; padding:8px 12px; border-radius:8px;">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+      
+      tbody.innerHTML = html;
+      
+      document.querySelectorAll('.tx-btn-edit').forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          Transactions.edit(btn.dataset.id);
+        };
+      });
+      
+      document.querySelectorAll('.tx-btn-del').forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          Transactions.delete(btn.dataset.id);
+        };
+      });
+      
+      console.log(`✅ Tabela renderizada com ${AppState.transactions.length} transações`);
+    }, 100);
   },
   
   renderRecent() {
@@ -136,7 +150,7 @@ const Transactions = {
             <div class="tx-name">${Utils.escapeHtml(t.name)}</div>
             <div class="tx-meta">
               ${t.category || 'Sem categoria'}
-              ${account ? ` • ${account.icon || '🏦'} ${Utils.escapeHtml(account.name)}` : ''}
+              ${account ? ` • ${account.icon || '🏦'} ${account.name}` : ''}
               • ${new Date(t.date).toLocaleDateString('pt-BR')}
             </div>
           </div>
@@ -153,19 +167,13 @@ const Transactions = {
     
     let filtered = [...AppState.transactions];
     
-    if (search) {
-      filtered = filtered.filter(t => t.name.toLowerCase().includes(search));
-    }
-    
-    if (type !== 'all') {
-      filtered = filtered.filter(t => t.type === (type === 'income' ? 'in' : 'out'));
-    }
-    
-    if (category !== 'all') {
-      filtered = filtered.filter(t => t.category === category);
-    }
+    if (search) filtered = filtered.filter(t => t.name.toLowerCase().includes(search));
+    if (type !== 'all') filtered = filtered.filter(t => t.type === (type === 'income' ? 'in' : 'out'));
+    if (category !== 'all') filtered = filtered.filter(t => t.category === category);
     
     const tbody = document.getElementById('transactionsList');
+    if (!tbody) return;
+    
     if (filtered.length === 0) {
       tbody.innerHTML = `
         <tr>
@@ -177,26 +185,27 @@ const Transactions = {
       return;
     }
     
-    tbody.innerHTML = filtered.map(t => {
+    let html = '';
+    for (const t of filtered) {
       const isIncome = t.type === 'in';
       const sign = isIncome ? '+' : '-';
       const color = isIncome ? 'var(--green)' : 'var(--red)';
+      const tipoText = isIncome ? '💰 Receita' : '💸 Despesa';
+      const tipoBg = isIncome ? 'var(--green2)' : 'var(--red2)';
       const account = AppState.accounts?.find(a => a.id === t.account_id);
-      const accountDisplay = account ? `${account.icon || '🏦'} ${Utils.escapeHtml(account.name)}` : '📌 Sem conta';
+      const contaDisplay = account ? `${account.icon || '🏦'} ${account.name}` : '📌 Sem conta';
       
-      return `
+      html += `
         <tr style="border-bottom:1px solid var(--border);">
           <td style="padding:14px 12px;">
             <div style="font-weight:600;">${Utils.escapeHtml(t.name)}</div>
-            <div style="font-size:11px; color:var(--muted); margin-top:4px;">${accountDisplay}</div>
+            <div style="font-size:11px; color:var(--muted); margin-top:4px;">${contaDisplay}</div>
           </td>
           <td style="padding:14px 12px;">
-            <span class="cat-tag" style="background:${isIncome ? 'var(--green2)' : 'var(--red2)'}; color:${color}">
-              ${isIncome ? 'Receita' : 'Despesa'}
-            </span>
+            <span style="background:${tipoBg}; color:${color}; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600;">${tipoText}</span>
           </td>
           <td style="padding:14px 12px;">
-            <span style="background:var(--bg3); padding:4px 10px; border-radius:20px; font-size:12px;">${t.category || 'Sem categoria'}</span>
+            <span style="background:var(--bg3); padding:4px 12px; border-radius:20px; font-size:12px;">${t.category || 'Sem categoria'}</span>
           </td>
           <td style="padding:14px 12px; color:var(--muted);">${new Date(t.date).toLocaleDateString('pt-BR')}</td>
           <td style="padding:14px 12px; font-family:'DM Mono',monospace; font-weight:700; color:${color};">${sign} R$ ${Utils.formatMoney(t.amount)}</td>
@@ -208,19 +217,21 @@ const Transactions = {
           </td>
         </tr>
       `;
-    }).join('');
+    }
+    
+    tbody.innerHTML = html;
     
     document.querySelectorAll('.tx-btn-edit').forEach(btn => {
       btn.onclick = (e) => {
         e.stopPropagation();
-        this.edit(btn.dataset.id);
+        Transactions.edit(btn.dataset.id);
       };
     });
     
     document.querySelectorAll('.tx-btn-del').forEach(btn => {
       btn.onclick = (e) => {
         e.stopPropagation();
-        this.delete(btn.dataset.id);
+        Transactions.delete(btn.dataset.id);
       };
     });
   },
@@ -275,8 +286,6 @@ const Transactions = {
       if (error) throw error;
       
       this.closeModal();
-      
-      // Recarregar dados
       await Accounts.load();
       await this.load();
       
@@ -333,14 +342,12 @@ const Transactions = {
   },
   
   openModal() {
-    // Limpar campos
     document.getElementById('modalTitle').textContent = 'Nova Transação';
     document.getElementById('transactionDescription').value = '';
     document.getElementById('transactionAmount').value = '';
     document.getElementById('transactionDate').value = Utils.getCurrentDate();
     document.getElementById('transactionType').value = 'income';
     
-    // Carregar contas no select
     const accountSelect = document.getElementById('transactionAccount');
     if (accountSelect) {
       if (AppState.accounts && AppState.accounts.length > 0) {
