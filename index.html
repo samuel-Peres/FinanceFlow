@@ -129,7 +129,9 @@
 <!-- MAIN CONTENT -->
 <main class="main" id="mainContent" style="display:none">
   
-  <!-- DASHBOARD PAGE -->
+  <!-- ============================================ -->
+  <!-- DASHBOARD PAGE (COM NOVOS GRÁFICOS) -->
+  <!-- ============================================ -->
   <div class="page active" id="page-dashboard">
     <div class="page-header">
       <div>
@@ -139,6 +141,7 @@
       <button class="btn btn-primary" onclick="Transactions.openModal()">+ Nova transação</button>
     </div>
     
+    <!-- Cards Principais -->
     <div class="cards-grid">
       <div class="card"><div class="card-label">SALDO TOTAL</div><div class="card-value green" id="totalBalance">R$ 0,00</div><div class="card-bg-icon">💰</div></div>
       <div class="card"><div class="card-label">RECEITAS (MÊS)</div><div class="card-value green" id="monthlyIncome">R$ 0,00</div><div class="card-bg-icon">📈</div></div>
@@ -146,6 +149,7 @@
       <div class="card"><div class="card-label">ECONOMIA</div><div class="card-value yellow" id="savingsRate">0%</div><div class="card-bg-icon">🎯</div></div>
     </div>
     
+    <!-- Cards de Indicadores Avançados -->
     <div class="cards-grid" style="grid-template-columns: repeat(4,1fr); margin-top: -5px;">
       <div class="card"><div class="card-label">🏦 TOTAL EM BANCOS</div><div class="card-value green" id="totalBankBalance">R$ 0,00</div></div>
       <div class="card"><div class="card-label">👛 TOTAL EM CARTEIRA</div><div class="card-value green" id="totalWalletBalance">R$ 0,00</div></div>
@@ -164,6 +168,7 @@
       </div>
     </div>
     
+    <!-- Gráficos Originais -->
     <div class="charts-row" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
       <div class="chart-card">
         <div class="chart-header"><div class="chart-title">📊 Gastos por Categoria</div></div>
@@ -175,11 +180,52 @@
       </div>
     </div>
     
+    <!-- Gráfico de Evolução Patrimonial -->
     <div class="chart-card">
       <div class="chart-header"><div class="chart-title">📈 Evolução Patrimonial (6 meses)</div></div>
       <canvas id="evolutionChart" style="max-height:200px; width:100%"></canvas>
     </div>
     
+    <!-- ============================================ -->
+    <!-- NOVOS GRÁFICOS AVANÇADOS -->
+    <!-- ============================================ -->
+    <div class="charts-row" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+      
+      <!-- Gráfico 1: Previsão de Gastos -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">📈 Previsão de Gastos (Próximos 30 dias)</div>
+          <span class="badge" style="background:var(--yellow2); color:var(--yellow); padding:2px 8px; border-radius:12px; font-size:10px;">Baseado no histórico</span>
+        </div>
+        <canvas id="forecastChart" style="max-height:200px; width:100%"></canvas>
+        <div id="forecastInsight" style="font-size:11px; color:var(--muted); margin-top:10px; text-align:center;"></div>
+      </div>
+      
+      <!-- Gráfico 2: Comparação Mês a Mês -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">📊 Comparação Mês a Mês</div>
+          <select id="comparisonYear" class="filter-select" style="padding:4px 8px; font-size:12px;" onchange="Charts.renderComparisonChart()">
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026" selected>2026</option>
+          </select>
+        </div>
+        <canvas id="comparisonChart" style="max-height:200px; width:100%"></canvas>
+      </div>
+    </div>
+    
+    <!-- Gráfico 3: Metas vs Realizado -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">🎯 Metas vs Realizado</div>
+        <button class="btn btn-ghost" onclick="Charts.renderGoalsVsActual()" style="padding:4px 12px; font-size:12px;">⟳ Atualizar</button>
+      </div>
+      <canvas id="goalsVsActualChart" style="max-height:250px; width:100%"></canvas>
+    </div>
+    
+    <!-- Metas -->
     <div class="chart-card" id="goalsContainer">
       <div class="chart-header">
         <div class="chart-title">🎯 Minhas Metas</div>
@@ -188,6 +234,7 @@
       <div id="goalsList"></div>
     </div>
     
+    <!-- Últimas Transações -->
     <div class="chart-card">
       <div class="chart-header">
         <div class="chart-title">📋 Últimas Transações</div>
@@ -198,7 +245,7 @@
   </div>
 
   <!-- ============================================ -->
-  <!-- TRANSACTIONS PAGE (CORRIGIDA) -->
+  <!-- TRANSACTIONS PAGE -->
   <!-- ============================================ -->
   <div class="page" id="page-transactions">
     <div class="page-header">
@@ -250,10 +297,10 @@
               <td colspan="6" style="text-align:center;padding:60px;color:var(--muted)">
                 <div style="font-size:48px;margin-bottom:16px">💳</div>
                 <div>Carregando transações...</div>
-               </td>
-             </tr>
+              </td>
+            </tr>
           </tbody>
-         </table>
+        </table>
       </div>
     </div>
   </div>
