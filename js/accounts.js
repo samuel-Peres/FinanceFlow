@@ -1,5 +1,5 @@
 // ============================================
-// MÓDULO DE CONTAS BANCÁRIAS
+// CONTAS BANCÁRIAS (ATUALIZADO)
 // ============================================
 const Accounts = {
   async load() {
@@ -14,6 +14,7 @@ const Accounts = {
     AppState.accounts = data || [];
     this.render();
     Dashboard.updateAccountsSummary();
+    Dashboard.updateAccountsSummaryCard();
     if (window.Charts) Charts.renderBankDistribution();
     return AppState.accounts;
   },
@@ -22,7 +23,7 @@ const Accounts = {
     const container = document.getElementById('accountsList');
     if (!container) return;
     
-    if (AppState.accounts.length === 0) {
+    if (!AppState.accounts || AppState.accounts.length === 0) {
       container.innerHTML = `
         <div style="text-align:center;padding:60px 20px;color:var(--muted)">
           <div style="font-size:64px;margin-bottom:20px">🏦</div>
@@ -34,7 +35,21 @@ const Accounts = {
       return;
     }
     
-    container.innerHTML = AppState.accounts.map(acc => `
+    // Calcular saldo total
+    const totalBalance = AppState.accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
+    
+    // Adicionar card de resumo no topo
+    const summaryCard = `
+      <div style="background: linear-gradient(135deg, var(--green2), var(--bg3)); border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center; border: 1px solid var(--border);">
+        <div style="font-size: 14px; color: var(--muted); margin-bottom: 8px;">💰 SALDO TOTAL DE TODAS AS CONTAS</div>
+        <div style="font-size: 32px; font-weight: 700; color: var(--green);">R$ ${Utils.formatMoney(totalBalance)}</div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 8px;">${AppState.accounts.length} conta(s) cadastrada(s)</div>
+        <button class="btn btn-ghost" style="margin-top: 12px;" onclick="Dashboard.showAccountDetails()">📊 Ver Detalhes de cada conta</button>
+      </div>
+    `;
+    
+    // Listar contas
+    const accountsList = AppState.accounts.map(acc => `
       <div class="account-card" style="background:linear-gradient(135deg, ${acc.color}15, var(--bg3)); border-left:4px solid ${acc.color}; border-radius:16px; padding:18px; margin-bottom:12px; transition:all .2s;">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
           <div style="display:flex; align-items:center; gap:12px;">
@@ -57,6 +72,8 @@ const Accounts = {
         </div>
       </div>
     `).join('');
+    
+    container.innerHTML = summaryCard + accountsList;
   },
   
   getTypeName(type) {
@@ -110,6 +127,7 @@ const Accounts = {
     Utils.showToast('✅ Conta salva com sucesso!');
     this.closeModal();
     await this.load();
+    Dashboard.update();
   },
   
   async edit(id) {
@@ -123,7 +141,7 @@ const Accounts = {
     document.getElementById('accountColor').value = account.color;
     document.getElementById('accountIcon').value = account.icon || '🏦';
     document.getElementById('accountType').value = account.type;
-    document.getElementById('accountBalance').value = account.initial_balance;
+    document.getElementById('accountBalance').value = account.initial_balance || account.balance;
     
     this.openModal();
   },
@@ -139,6 +157,7 @@ const Accounts = {
     
     Utils.showToast('✅ Conta excluída!');
     await this.load();
+    Dashboard.update();
   },
   
   openModal() {

@@ -1,21 +1,37 @@
 // ============================================
-// DASHBOARD (ATUALIZADO)
+// DASHBOARD (CORRIGIDO - MOSTRA SALDO DAS CONTAS)
 // ============================================
 const Dashboard = {
   update() {
     this.updateMainCards();
     this.updateMonthlyCards();
     this.updateIndicators();
+    this.updateAccountsSummary();
+    this.updateAccountsSummaryCard();
   },
   
   updateMainCards() {
+    // Calcular saldo total de TODAS as contas
+    let totalBalance = 0;
+    if (AppState.accounts && AppState.accounts.length > 0) {
+      totalBalance = AppState.accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
+    }
+    
+    // Calcular receitas e despesas totais
     const totalIncome = AppState.transactions.filter(t => t.type === 'in').reduce((sum, t) => sum + parseFloat(t.amount), 0);
     const totalExpense = AppState.transactions.filter(t => t.type === 'out').reduce((sum, t) => sum + parseFloat(t.amount), 0);
-    const balance = totalIncome - totalExpense;
-    const savingsRate = totalIncome > 0 ? ((balance / totalIncome) * 100).toFixed(0) : 0;
     
-    document.getElementById('totalBalance').innerHTML = `R$ ${Utils.formatMoney(balance)}`;
-    document.getElementById('savingsRate').innerHTML = `${savingsRate}%`;
+    // Calcular economia
+    const savingsRate = totalIncome > 0 ? ((totalBalance / totalIncome) * 100).toFixed(0) : 0;
+    
+    // Atualizar elementos
+    const totalBalanceEl = document.getElementById('totalBalance');
+    const savingsRateEl = document.getElementById('savingsRate');
+    
+    if (totalBalanceEl) totalBalanceEl.innerHTML = `R$ ${Utils.formatMoney(totalBalance)}`;
+    if (savingsRateEl) savingsRateEl.innerHTML = `${savingsRate}%`;
+    
+    console.log('Saldo total atualizado:', totalBalance);
   },
   
   updateMonthlyCards() {
@@ -30,46 +46,119 @@ const Dashboard = {
     
     const monthlyIncomeEl = document.getElementById('monthlyIncome');
     const monthlyExpenseEl = document.getElementById('monthlyExpense');
+    
     if (monthlyIncomeEl) monthlyIncomeEl.innerHTML = `R$ ${Utils.formatMoney(monthlyIncome)}`;
     if (monthlyExpenseEl) monthlyExpenseEl.innerHTML = `R$ ${Utils.formatMoney(monthlyExpense)}`;
   },
   
   updateIndicators() {
-    // Total em bancos
-    const totalBankBalance = document.getElementById('totalBankBalance');
-    if (totalBankBalance && window.Accounts) {
-      totalBankBalance.innerHTML = `R$ ${Utils.formatMoney(Accounts.getBankBalance())}`;
+    // Total em bancos (excluindo carteira/dinheiro)
+    let bankBalance = 0;
+    let walletBalance = 0;
+    
+    if (AppState.accounts) {
+      bankBalance = AppState.accounts
+        .filter(acc => acc.type !== 'carteira' && acc.type !== 'dinheiro')
+        .reduce((sum, acc) => sum + (acc.balance || 0), 0);
+      
+      walletBalance = AppState.accounts
+        .filter(acc => acc.type === 'carteira' || acc.type === 'dinheiro')
+        .reduce((sum, acc) => sum + (acc.balance || 0), 0);
     }
     
-    // Total em carteira
-    const totalWalletBalance = document.getElementById('totalWalletBalance');
-    if (totalWalletBalance && window.Accounts) {
-      totalWalletBalance.innerHTML = `R$ ${Utils.formatMoney(Accounts.getWalletBalance())}`;
-    }
+    const totalBankBalanceEl = document.getElementById('totalBankBalance');
+    const totalWalletBalanceEl = document.getElementById('totalWalletBalance');
+    const activeGoalsEl = document.getElementById('activeGoals');
+    const pendingBillsCountEl = document.getElementById('pendingBillsCount');
     
-    // Metas ativas
-    const activeGoals = document.getElementById('activeGoals');
-    if (activeGoals && window.Goals) {
-      activeGoals.innerHTML = AppState.goals?.length || 0;
-    }
+    if (totalBankBalanceEl) totalBankBalanceEl.innerHTML = `R$ ${Utils.formatMoney(bankBalance)}`;
+    if (totalWalletBalanceEl) totalWalletBalanceEl.innerHTML = `R$ ${Utils.formatMoney(walletBalance)}`;
+    if (activeGoalsEl) activeGoalsEl.innerHTML = AppState.goals?.length || 0;
     
-    // Contas a vencer
-    const pendingBillsCount = document.getElementById('pendingBillsCount');
-    if (pendingBillsCount && window.Bills) {
-      const pending = AppState.bills?.filter(b => b.status === 'pending') || [];
-      pendingBillsCount.innerHTML = pending.length;
+    // Contas a vencer (próximos 7 dias)
+    if (AppState.bills) {
+      const today = new Date();
+      const nextWeek = new Date();
+      nextWeek.setDate(nextWeek.getDate() + 7);
+      
+      const upcomingBills = AppState.bills.filter(b => {
+        const dueDate = new Date(b.due_date);
+        return b.status !== 'paid' && dueDate >= today && dueDate <= nextWeek;
+      }).length;
+      
+      if (pendingBillsCountEl) pendingBillsCountEl.innerHTML = upcomingBills;
     }
   },
   
   updateAccountsSummary() {
-    const totalAccountsBalance = document.getElementById('totalAccountsBalance');
-    const accountsCount = document.getElementById('accountsCount');
+    // Total de todas as contas
+    let totalAccountsBalance = 0;
+    if (AppState.accounts) {
+      totalAccountsBalance = AppState.accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
+    }
     
-    if (totalAccountsBalance && window.Accounts) {
-      totalAccountsBalance.innerHTML = `R$ ${Utils.formatMoney(Accounts.getTotalBalance())}`;
+    const totalAccountsBalanceEl = document.getElementById('totalAccountsBalance');
+    const accountsCountEl = document.getElementById('accountsCount');
+    
+    if (totalAccountsBalanceEl) totalAccountsBalanceEl.innerHTML = `R$ ${Utils.formatMoney(totalAccountsBalance)}`;
+    if (accountsCountEl) accountsCountEl.innerHTML = AppState.accounts?.length || 0;
+    
+    console.log('Resumo das contas:', {
+      total: totalAccountsBalance,
+      count: AppState.accounts?.length,
+      accounts: AppState.accounts
+    });
+  },
+  
+  updateAccountsSummaryCard() {
+    const container = document.getElementById('accountsSummaryContent');
+    if (!container) return;
+    
+    if (!AppState.accounts || AppState.accounts.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Nenhuma conta cadastrada</div>';
+      return;
     }
-    if (accountsCount && AppState.accounts) {
-      accountsCount.innerHTML = AppState.accounts.length;
+    
+    container.innerHTML = AppState.accounts.map(acc => `
+      <div style="text-align:center; min-width: 120px; background:var(--bg3); padding:12px; border-radius:12px;">
+        <div style="font-size: 28px;">${acc.icon || '🏦'}</div>
+        <div style="font-weight: 600; font-size: 13px; margin-top: 5px;">${Utils.escapeHtml(acc.name)}</div>
+        <div style="font-size: 16px; font-weight: 700; color: var(--green); margin-top: 5px;">R$ ${Utils.formatMoney(acc.balance)}</div>
+        <div style="font-size: 10px; color: var(--muted);">${acc.bank}</div>
+      </div>
+    `).join('');
+  },
+  
+  // Função para mostrar detalhes de cada conta
+  showAccountDetails() {
+    if (!AppState.accounts || AppState.accounts.length === 0) {
+      Utils.showToast('Nenhuma conta cadastrada');
+      return;
     }
+    
+    let message = '📊 RESUMO DAS CONTAS:\n\n';
+    AppState.accounts.forEach(acc => {
+      message += `${acc.icon || '🏦'} ${acc.name} (${acc.bank})\n`;
+      message += `   Saldo: R$ ${Utils.formatMoney(acc.balance)}\n`;
+      message += `   Tipo: ${this.getTypeName(acc.type)}\n\n`;
+    });
+    
+    const total = AppState.accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
+    message += `━━━━━━━━━━━━━━━━━━\n`;
+    message += `💰 SALDO TOTAL: R$ ${Utils.formatMoney(total)}`;
+    
+    alert(message);
+  },
+  
+  getTypeName(type) {
+    const names = {
+      corrente: 'Conta Corrente',
+      poupanca: 'Poupança',
+      carteira: 'Carteira',
+      dinheiro: 'Dinheiro físico',
+      investimento: 'Investimento',
+      cartao: 'Cartão de Crédito'
+    };
+    return names[type] || type;
   }
 };
