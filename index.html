@@ -7,577 +7,294 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-/* Seu CSS permanece o mesmo */
-:root {
-  --bg:#0a0a0f; --bg2:#111118; --bg3:#18181f; --bg4:#1e1e28;
-  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.13);
-  --text:#f0f0f5; --muted:#6b6b80; --muted2:#9898aa;
-  --green:#00e5a0; --green2:rgba(0,229,160,0.12); --green3:rgba(0,229,160,0.06);
-  --red:#ff4d6d;   --red2:rgba(255,77,109,0.12);
-  --yellow:#ffc947;--yellow2:rgba(255,201,71,0.12);
-  --purple:#8b5cf6;--blue:#38bdf8;
-  --nubank:#820ad1;--bb:#f5d000;
-  --sidebar:240px; --sidebar-sm:68px; --bnav:62px;
-  --radius:14px; --radius-sm:10px; --radius-xs:8px;
-}
-
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{font-size:16px;-webkit-text-size-adjust:100%}
-body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow:hidden}
-
-/* ══════════════════════════════════════════
-   SCROLLBAR
-══════════════════════════════════════════ */
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-
-/* ══════════════════════════════════════════
-   SIDEBAR — Desktop (≥1025px)
-══════════════════════════════════════════ */
-.sidebar{
-  width:var(--sidebar);height:100vh;
-  background:var(--bg2);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;padding:22px 0;
-  flex-shrink:0;position:fixed;left:0;top:0;z-index:40;
-  transition:width .25s ease;
-}
-
-.logo{padding:0 20px 26px;display:flex;align-items:center;gap:10px;overflow:hidden}
-.logo-icon{width:34px;height:34px;flex-shrink:0;background:linear-gradient(135deg,var(--green),#00b37e);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
-.logo-text{font-size:17px;font-weight:800;letter-spacing:-.5px;white-space:nowrap;overflow:hidden}
-.logo-text span{color:var(--green)}
-
-.nav-section{padding:0 12px;margin-bottom:4px}
-.nav-label{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:0 8px;margin:14px 0 5px;white-space:nowrap;overflow:hidden;opacity:1;transition:opacity .2s}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:all .15s;color:var(--muted2);font-size:14px;font-weight:500;position:relative;white-space:nowrap;overflow:hidden}
-.nav-item:hover{background:var(--bg3);color:var(--text)}
-.nav-item.active{background:var(--green2);color:var(--green)}
-.nav-item.active::before{content:'';position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--green);border-radius:0 3px 3px 0}
-.nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
-.nav-text{overflow:hidden;transition:opacity .2s,max-width .25s;max-width:200px}
-
-.sidebar-footer{margin-top:auto;padding:12px;border-top:1px solid var(--border)}
-.user-card{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--radius-sm);cursor:pointer;transition:background .15s;overflow:hidden}
-.user-card:hover{background:var(--bg3)}
-.avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
-.user-info{flex:1;min-width:0;overflow:hidden;transition:opacity .2s,max-width .25s;max-width:160px}
-.user-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.user-plan{font-size:11px;color:var(--muted)}
-
-/* ── Tablet: icon sidebar (601–1024px) ── */
-@media(max-width:1024px)and(min-width:601px){
-  .sidebar{width:var(--sidebar-sm)}
-  .logo{padding:0 17px 22px;justify-content:center}
-  .logo-text,.nav-label,.nav-text,.user-info{opacity:0;max-width:0;pointer-events:none}
-  .nav-section{padding:0 8px}
-  .nav-item{justify-content:center;padding:11px}
-  .nav-item.active::before{display:none}
-  .sidebar-footer{padding:8px}
-  .user-card{justify-content:center;padding:10px}
-}
-
-/* ── Mobile: hidden ── */
-@media(max-width:600px){
-  .sidebar{display:none!important}
-  .sidebar-footer{padding-bottom:calc(var(--bnav) + env(safe-area-inset-bottom,0px) + 12px)!important}
-}
-
-/* ══════════════════════════════════════════
-   BOTTOM NAV — Mobile (≤600px)
-══════════════════════════════════════════ */
-.bottom-nav{
-  display:none;position:fixed;bottom:0;left:0;right:0;
-  height:var(--bnav);background:var(--bg2);
-  border-top:1px solid var(--border);z-index:40;
-  justify-content:space-around;align-items:center;padding:0 4px;
-  /* safe area for iPhone notch */
-  padding-bottom:env(safe-area-inset-bottom,0px);
-}
-@media(max-width:600px){.bottom-nav{display:flex}}
-
-.bn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 10px;border-radius:var(--radius-xs);cursor:pointer;transition:all .15s;color:var(--muted2);flex:1;-webkit-tap-highlight-color:transparent}
-.bn-item.active{color:var(--green)}
-.bn-item.active .bn-dot{display:block}
-.bn-dot{display:none;width:4px;height:4px;border-radius:50%;background:var(--green);margin:0 auto 1px}
-.bn-icon{font-size:19px;line-height:1}
-.bn-label{font-size:10px;font-weight:600;white-space:nowrap}
-
-/* ══════════════════════════════════════════
-   MAIN
-══════════════════════════════════════════ */
-.main{
-  flex:1;margin-left:var(--sidebar);
-  height:100vh;overflow-y:auto;
-  transition:margin-left .25s ease;
-}
-@media(max-width:1024px)and(min-width:601px){.main{margin-left:var(--sidebar-sm)}}
-@media(max-width:600px){
-  .main{margin-left:0;height:100vh;padding-bottom:calc(var(--bnav) + 54px + env(safe-area-inset-bottom,0px))}
-  body{overflow:hidden}
-}
-
-/* page wrapper */
-.page{display:none;padding:28px;animation:fadeIn .2s ease}
-.page.active{display:block}
-@media(max-width:900px){.page{padding:20px}}
-@media(max-width:600px){.page{padding:14px}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
-/* ══════════════════════════════════════════
-   PAGE HEADER
-══════════════════════════════════════════ */
-.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:12px;flex-wrap:wrap}
-.page-title{font-size:clamp(18px,3vw,22px);font-weight:800;letter-spacing:-.5px}
-.page-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.header-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-@media(max-width:480px){
-  .page-header{flex-direction:column;gap:10px}
-  .header-actions{width:100%}
-  .header-actions .btn{flex:1;justify-content:center}
-  .btn-ghost-hide{display:none}
-}
-
-/* ══════════════════════════════════════════
-   BUTTONS
-══════════════════════════════════════════ */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 15px;border-radius:9px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none;white-space:nowrap;-webkit-tap-highlight-color:transparent}
-.btn-primary{background:var(--green);color:#000}
-.btn-primary:hover{background:#00f5ad;transform:translateY(-1px)}
-.btn-primary:active{transform:translateY(0)}
-.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--text)}
-.btn-outline:hover{background:var(--bg3);border-color:var(--green);color:var(--green)}
-.btn-ghost{background:var(--bg3);color:var(--muted2);border:1px solid var(--border)}
-.btn-ghost:hover{color:var(--text);border-color:var(--border2)}
-
-/* ══════════════════════════════════════════
-   SUMMARY CARDS
-══════════════════════════════════════════ */
-.cards-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
-@media(max-width:1100px){.cards-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){
-  /* Horizontal scroll on mobile */
-  .cards-grid{
-    display:flex;gap:12px;margin-bottom:18px;
-    overflow-x:auto;scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;padding-bottom:4px;
-  }
-  .cards-grid::-webkit-scrollbar{height:3px}
-}
-
-.card{
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--radius);padding:18px;
-  position:relative;overflow:hidden;transition:border-color .2s;
-}
-@media(max-width:600px){
-  .card{flex-shrink:0;width:170px;scroll-snap-align:start;padding:16px}
-}
-.card:hover{border-color:var(--border2)}
-.card-label{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.card-value{font-family:'DM Mono',monospace;font-size:clamp(16px,2.5vw,22px);font-weight:500;letter-spacing:-1px;margin-bottom:6px}
-.card-value.green{color:var(--green)}
-.card-value.red{color:var(--red)}
-.card-value.yellow{color:var(--yellow)}
-.card-change{font-size:11px;display:flex;align-items:center;gap:4px}
-.card-change.up{color:var(--green)}
-.card-change.down{color:var(--red)}
-.card-bg-icon{position:absolute;right:-8px;bottom:-8px;font-size:52px;opacity:.06;pointer-events:none}
-
-/* ══════════════════════════════════════════
-   CHART AREA
-══════════════════════════════════════════ */
-.grid-chart{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px}
-@media(max-width:900px){.grid-chart{grid-template-columns:1fr}}
-
-.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px}
-.chart-card:last-child{margin-bottom:0}
-.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
-.chart-title{font-size:14px;font-weight:700}
-.chart-legend{display:flex;gap:12px}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted2)}
-.legend-dot{width:7px;height:7px;border-radius:50%}
-.chart-svg{width:100%;overflow:visible}
-
-/* categories */
-.cat-list{display:flex;flex-direction:column;gap:12px}
-.cat-header{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
-.cat-name{font-weight:600}
-.cat-val{font-family:'DM Mono',monospace;color:var(--muted2);font-size:12px}
-.progress-bar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
-.progress-fill{height:100%;border-radius:3px;transition:width .8s ease}
-
-/* ══════════════════════════════════════════
-   TRANSACTIONS LIST
-══════════════════════════════════════════ */
-.tx-list{display:flex;flex-direction:column;gap:2px}
-.tx-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:var(--radius-sm);transition:background .15s;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.tx-item:hover,.tx-item:active{background:var(--bg3)}
-.tx-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.tx-info{flex:1;min-width:0}
-.tx-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tx-meta{font-size:11px;color:var(--muted);margin-top:2px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.bank-badge{font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;letter-spacing:.5px}
-.bank-nu{background:rgba(130,10,209,.2);color:#b060f0}
-.bank-bb{background:rgba(245,208,0,.15);color:var(--bb)}
-.bank-manual{background:var(--bg3);color:var(--muted2)}
-.tx-amount{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;text-align:right;white-space:nowrap}
-.tx-amount.out{color:var(--red)}
-.tx-amount.in{color:var(--green)}
-
-/* ══════════════════════════════════════════
-   TABLE (desktop/tablet) + CARD LIST (mobile)
-══════════════════════════════════════════ */
-.table-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
-.table-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--border);gap:10px}
-
-.search-wrap{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);padding:8px 11px;min-width:0;flex:1;max-width:230px}
-.search-wrap input{background:none;border:none;outline:none;font-family:'Syne',sans-serif;font-size:13px;color:var(--text);width:100%;min-width:0}
-.search-wrap input::placeholder{color:var(--muted)}
-
-@media(max-width:600px){
-  .search-wrap{max-width:100%;flex:1}
-  .table-toolbar{flex-direction:column;align-items:stretch}
-}
-
-.filter-row{display:flex;gap:8px;flex-wrap:wrap}
-@media(max-width:600px){.filter-row{overflow-x:auto;padding-bottom:2px;flex-wrap:nowrap}}
-
-select.filter-select{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);padding:8px 10px;font-family:'Syne',sans-serif;font-size:12px;color:var(--muted2);cursor:pointer;outline:none;transition:border-color .15s;white-space:nowrap}
-select.filter-select:hover{border-color:var(--green);color:var(--text)}
-
-/* Desktop table */
-.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;min-width:520px}
-th{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:11px 16px;text-align:left;border-bottom:1px solid var(--border);background:var(--bg2);white-space:nowrap}
-td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border)}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--bg3)}
-.cat-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
-
-/* ══════════════════════════════════════════
-   EXPORT
-══════════════════════════════════════════ */
-.export-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
-@media(max-width:800px){.export-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:500px){.export-grid{grid-template-columns:1fr}}
-
-.export-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px 18px;text-align:center;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
-.export-card:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,229,160,.08)}
-.export-card:active{transform:translateY(0)}
-.export-card-icon{font-size:32px;margin-bottom:10px}
-.export-card-title{font-size:15px;font-weight:700;margin-bottom:5px}
-.export-card-desc{font-size:11px;color:var(--muted);line-height:1.5}
-
-.export-filter-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px}
-.filter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-@media(max-width:700px){.filter-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.filter-grid{grid-template-columns:1fr}}
-
-/* ══════════════════════════════════════════
-   FORMS
-══════════════════════════════════════════ */
-.form-group{display:flex;flex-direction:column;gap:5px}
-.form-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
-.form-select,.form-input{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 12px;font-family:'Syne',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;width:100%}
-.form-select:hover,.form-input:hover,.form-select:focus,.form-input:focus{border-color:var(--green)}
-
-/* ══════════════════════════════════════════
-   CONFIG
-══════════════════════════════════════════ */
-.config-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}
-.config-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
-.config-header-icon{width:34px;height:34px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px}
-.config-title{font-size:14px;font-weight:700}
-.config-sub{font-size:11px;color:var(--muted);margin-top:1px}
-.config-body{padding:18px 20px}
-@media(max-width:600px){
-  .config-header{padding:14px 16px}
-  .config-body{padding:14px 16px}
-}
-
-.bank-connect-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg3);border-radius:var(--radius-sm);margin-bottom:10px;border:1px solid var(--border);gap:12px;flex-wrap:wrap}
-.bank-info{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-.bank-logo{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800}
-.bank-logo.nu{background:rgba(130,10,209,.2);color:var(--nubank)}
-.bank-logo.bb{background:rgba(245,208,0,.15);color:var(--bb)}
-.bank-actions{display:flex;gap:6px;flex-wrap:wrap}
-
-.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px}
-.status-dot.connected{background:var(--green);box-shadow:0 0 5px var(--green)}
-.status-dot.disconnected{background:var(--muted)}
-
-/* toggle */
-.toggle{position:relative;width:42px;height:22px;background:var(--bg);border-radius:11px;border:1px solid var(--border2);cursor:pointer;transition:background .2s;flex-shrink:0}
-.toggle.on{background:var(--green);border-color:var(--green)}
-.toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:white;top:2px;left:2px;transition:transform .2s}
-.toggle.on::after{transform:translateX(20px)}
-
-/* alerts */
-.alert-item{display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--bg3);border-radius:var(--radius-sm);margin-bottom:10px;border:1px solid var(--border);gap:12px;flex-wrap:wrap}
-.alert-info{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-.alert-icon{font-size:20px;flex-shrink:0}
-.alert-title{font-size:13px;font-weight:600}
-.alert-desc{font-size:11px;color:var(--muted);margin-top:1px}
-
-/* telegram grid */
-.tg-grid{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
-@media(max-width:500px){.tg-grid{grid-template-columns:1fr}}
-
-/* ══════════════════════════════════════════
-   MODAL
-══════════════════════════════════════════ */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);z-index:100;align-items:flex-end;justify-content:center}
-@media(min-width:601px){.modal-overlay{align-items:center}}
-.modal-overlay.open{display:flex}
-
-.modal{
-  background:var(--bg2);border:1px solid var(--border2);
-  border-radius:20px 20px 0 0;padding:24px;
-  width:100%;max-width:100%;
-  max-height:92vh;overflow-y:auto;
-  animation:slideUp .25s cubic-bezier(.34,1.2,.64,1);
-  padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));
-}
-@media(min-width:601px){
-  .modal{border-radius:18px;width:440px;max-width:94vw;max-height:88vh;animation:modalIn .2s ease;padding-bottom:24px}
-}
-@keyframes slideUp{from{transform:translateY(110%)}to{transform:translateY(0)}}
-@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
-
-.modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 18px;display:block}
-@media(min-width:601px){.modal-handle{display:none}}
-.modal-title{font-size:18px;font-weight:800;margin-bottom:5px}
-.modal-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
-.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-@media(max-width:400px){.modal-grid{grid-template-columns:1fr}}
-.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
-
-/* ══════════════════════════════════════════
-   LOGIN
-══════════════════════════════════════════ */
-.login-page{display:none;min-height:100vh;background:var(--bg);align-items:center;justify-content:center;position:fixed;inset:0;z-index:50;padding:16px}
-.login-page.active{display:flex}
-.login-card{width:100%;max-width:400px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:clamp(22px,6vw,40px);position:relative;overflow:hidden}
-.login-card::before{content:'';position:absolute;top:-80px;right:-80px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,229,160,.15) 0%,transparent 70%);pointer-events:none}
-.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:26px}
-.login-title{font-size:clamp(20px,5vw,26px);font-weight:800;letter-spacing:-.5px;margin-bottom:5px}
-.login-sub{font-size:13px;color:var(--muted);margin-bottom:22px}
-.input-group{margin-bottom:12px}
-.input-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:block}
-.input-field{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;font-family:'Syne',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .15s}
-.input-field:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,229,160,.1)}
-.login-btn{width:100%;padding:13px;background:var(--green);color:#000;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:6px;transition:all .15s}
-.login-btn:hover{background:#00f5ad;transform:translateY(-1px)}
-.login-footer{text-align:center;margin-top:16px;font-size:13px;color:var(--muted)}
-.login-footer a{color:var(--green);cursor:pointer;text-decoration:none;font-weight:600}
-
-/* Google button */
-.google-btn{
-  width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
-  padding:12px;background:#fff;color:#1f1f1f;
-  border:none;border-radius:10px;
-  font-family:'Syne',sans-serif;font-size:14px;font-weight:600;
-  cursor:pointer;transition:all .15s;margin-bottom:16px;
-  box-shadow:0 1px 4px rgba(0,0,0,.2);
-}
-.google-btn:hover{background:#f5f5f5;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.25)}
-.google-btn:active{transform:translateY(0)}
-.google-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-
-/* Divider */
-.login-divider{
-  display:flex;align-items:center;gap:10px;
-  margin-bottom:16px;color:var(--muted);font-size:12px;
-}
-.login-divider::before,.login-divider::after{
-  content:'';flex:1;height:1px;background:var(--border2);
-}
-
-/* ══════════════════════════════════════════
-   TOAST
-══════════════════════════════════════════ */
-.toast{
-  position:fixed;right:16px;
-  bottom:calc(var(--bnav) + 12px + env(safe-area-inset-bottom,0px));
-  background:var(--bg2);border:1px solid var(--green);
-  border-radius:12px;padding:12px 16px;font-size:13px;color:var(--green);
-  display:flex;align-items:center;gap:8px;z-index:200;
-  transform:translateY(80px);opacity:0;
-  transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;
-  max-width:calc(100vw - 32px);
-}
-@media(min-width:601px){.toast{bottom:24px;right:24px}}
-.toast.show{transform:translateY(0);opacity:1}
-
-/* ══════════════════════════════════════════
-   MISC
-══════════════════════════════════════════ */
-.section-title{font-size:12px;font-weight:700;color:var(--muted2);margin-bottom:10px;letter-spacing:.5px}
-.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600}
-.badge-green{background:var(--green2);color:var(--green)}
-.badge-red{background:var(--red2);color:var(--red)}
-.badge-yellow{background:var(--yellow2);color:var(--yellow)}
-
-/* ── Ações de transação (editar/excluir) ── */
-.tx-actions{display:flex;gap:4px;opacity:0;transition:opacity .15s;flex-shrink:0}
-.tx-item:hover .tx-actions{opacity:1}
-@media(max-width:600px){.tx-actions{opacity:1}}
-.tx-btn{width:28px;height:28px;border-radius:7px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s;-webkit-tap-highlight-color:transparent}
-.tx-btn-edit{background:var(--bg3);color:var(--muted2)}
-.tx-btn-edit:hover{background:var(--green2);color:var(--green)}
-.tx-btn-del{background:var(--bg3);color:var(--muted2)}
-.tx-btn-del:hover{background:var(--red2);color:var(--red)}
-.td-actions{text-align:right;white-space:nowrap}
-.td-actions .tx-actions{opacity:0;justify-content:flex-end}
-tr:hover .tx-actions{opacity:1}
+/* SEU CSS COMPLETO AQUI (copie todo o estilo que você já tem) */
 </style>
 </head>
 <body>
 
-<!-- ════════ LOGIN ════════ -->
-<div class="login-page active" id="loginPage">
-  <div class="login-card">
-    <div class="login-logo">
-      <div class="logo-icon">💸</div>
-      <div class="logo-text">Finance<span>Flow</span></div>
-    </div>
-    <div class="login-title" id="loginTitle">Bem-vindo de volta</div>
-    <div class="login-sub" id="loginSub">Faça login para acessar seu painel financeiro.</div>
-
-    <!-- Google Button -->
-    <button class="google-btn" onclick="doLoginGoogle()">
-      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
-      Continuar com Google
-    </button>
-
-    <div class="login-divider"><span>ou entre com e-mail</span></div>
-
-    <div class="input-group">
-      <label class="input-label">E-mail</label>
-      <input class="input-field" type="email" placeholder="seu@email.com" id="loginEmail" autocomplete="email">
-    </div>
-    <div class="input-group">
-      <label class="input-label">Senha</label>
-      <input class="input-field" type="password" placeholder="••••••••" id="loginPassword" autocomplete="current-password">
-    </div>
-    <button class="login-btn" id="loginBtn" onclick="doLogin()">Entrar</button>
-    <div class="login-footer" id="loginFooter">Não tem conta? <a onclick="toggleMode()">Criar conta grátis</a></div>
-  </div>
-</div>
-
-<!-- ════════ SIDEBAR ════════ -->
-<nav class="sidebar" id="sidebar" style="display:none">
-  <div class="logo">
-    <div class="logo-icon">💸</div>
-    <div class="logo-text">Finance<span>Flow</span></div>
-  </div>
-  <div class="nav-section">
-    <div class="nav-label">Principal</div>
-    <div class="nav-item active" onclick="showPage('dashboard',this)">
-      <span class="nav-icon">📊</span><span class="nav-text">Dashboard</span>
-    </div>
-    <div class="nav-item" onclick="showPage('transactions',this)">
-      <span class="nav-icon">💳</span><span class="nav-text">Transações</span>
-    </div>
-    <div class="nav-item" onclick="showPage('export',this)">
-      <span class="nav-icon">📥</span><span class="nav-text">Exportar</span>
-    </div>
-  </div>
-  <div class="nav-section">
-    <div class="nav-label">Sistema</div>
-    <div class="nav-item" onclick="showPage('alerts',this)">
-      <span class="nav-icon">🔔</span><span class="nav-text">Alertas</span>
-    </div>
-    <div class="nav-item" onclick="showPage('config',this)">
-      <span class="nav-icon">⚙️</span><span class="nav-text">Configurações</span>
-    </div>
-  </div>
-  <div class="sidebar-footer">
-    <div class="user-card" onclick="doLogout()">
-      <div class="avatar" id="avatarDesktop">JM</div>
-      <div class="user-info">
-        <div class="user-name" id="userNameDesktop">Usuário</div>
-        <div class="user-plan" id="userEmailDesktop">carregando...</div>
-      </div>
-    </div>
-  </div>
-</nav>
-
-<!-- ════════ BOTTOM NAV ════════ -->
-<div id="mobileUserBar" style="display:none;position:fixed;bottom:var(--bnav);left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:8px 16px;z-index:39;align-items:center;justify-content:space-between;gap:10px;">
-  <div style="display:flex;align-items:center;gap:10px">
-    <div class="avatar" id="mobileAvatar" style="width:30px;height:30px;font-size:11px">U</div>
-    <div>
-      <div class="user-name" id="mobileUserName" style="font-size:13px;font-weight:600"></div>
-      <div class="user-plan" id="mobileUserEmail" style="font-size:10px;color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
-    </div>
-  </div>
-  <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px" onclick="doLogout()">Sair</button>
-</div>
-
-<nav class="bottom-nav" id="bottomNav" style="display:none">
-  <div class="bn-item active" onclick="showPage('dashboard',this,'bn')">
-    <div class="bn-dot"></div><div class="bn-icon">📊</div><div class="bn-label">Home</div>
-  </div>
-  <div class="bn-item" onclick="showPage('transactions',this,'bn')">
-    <div class="bn-dot"></div><div class="bn-icon">💳</div><div class="bn-label">Transações</div>
-  </div>
-  <div class="bn-item" onclick="showPage('export',this,'bn')">
-    <div class="bn-dot"></div><div class="bn-icon">📥</div><div class="bn-label">Exportar</div>
-  </div>
-  <div class="bn-item" onclick="showPage('alerts',this,'bn')">
-    <div class="bn-dot"></div><div class="bn-icon">🔔</div><div class="bn-label">Alertas</div>
-  </div>
-  <div class="bn-item" onclick="showPage('config',this,'bn')">
-    <div class="bn-dot"></div><div class="bn-icon">⚙️</div><div class="bn-label">Config</div>
-  </div>
-</nav>
-
-<!-- ════════ MAIN ════════ -->
-<main class="main" id="mainContent" style="display:none">
-
-  <!-- DASHBOARD, TRANSACTIONS, EXPORT, ALERTS, CONFIG pages... -->
-  <!-- (mantenha todo o HTML do seu projeto original aqui) -->
-
-</main>
+<!-- TODO O SEU HTML AQUI (login, sidebar, etc.) -->
 
 <script>
-/* ══════════════════════════════════════════
-   SUPABASE INIT
-══════════════════════════════════════════ */
+// SUPABASE INIT
 const { createClient } = supabase;
 const sb = createClient(
   'https://xsiajskzpoaqdytmtxuo.supabase.co',
   'sb_publishable_W1LwwWm1SAcAETokgUu4zw_8ubXEtHL'
 );
 
-/* ── GOOGLE LOGIN CORRIGIDO ── */
-async function doLoginGoogle(){
-  const btn=document.querySelector('.google-btn');
-  btn.disabled=true;
-  btn.innerHTML='⏳ Redirecionando...';
+// ========== VERSÃO CORRIGIDA PARA NETLIFY/GITHUB ==========
+
+async function doLoginGoogle() {
+  const btn = document.querySelector('.google-btn');
+  if (!btn) return;
   
-  // 🔥 CORREÇÃO: Usar window.location.origin em vez de window.location.href
-  const redirectUrl = window.location.origin;
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Redirecionando...';
   
-  const {error}=await sb.auth.signInWithOAuth({
-    provider:'google',
-    options:{
-      redirectTo: redirectUrl
-    }
-  });
-  
-  if(error){
-    showToast('❌ Erro Google: '+error.message);
-    btn.disabled=false;
-    btn.innerHTML=`<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg> Continuar com Google`;
+  try {
+    // Pega a URL base atual (funciona no GitHub Pages e Netlify)
+    const currentUrl = window.location.origin;
+    
+    const { data, error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: currentUrl,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        }
+      }
+    });
+    
+    if (error) throw error;
+    
+    // O redirect acontece automaticamente
+    console.log('Redirecionando para Google...');
+    
+  } catch (error) {
+    console.error('Erro detalhado:', error);
+    showToast('❌ Erro ao conectar com Google: ' + error.message);
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg> Continuar com Google`;
   }
 }
 
-/* O RESTO DO SEU CÓDIGO PERMANECE IGUAL */
-/* Inclua todas as outras funções: doLogin, doLogout, loadTransactions, etc. */
+// Verifica sessão ao carregar a página
+async function checkSession() {
+  const { data: { session }, error } = await sb.auth.getSession();
+  
+  if (session?.user) {
+    // Usuário logado
+    document.getElementById('loginPage')?.classList.remove('active');
+    document.getElementById('sidebar')?.style.setProperty('display', 'flex');
+    document.getElementById('mainContent')?.style.display = 'block';
+    document.getElementById('bottomNav')?.style.display = 'flex';
+    document.getElementById('mobileUserBar')?.style.display = 'flex';
+    
+    // Atualiza informações do usuário
+    const user = session.user;
+    const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuário';
+    const email = user.email || 'sem email';
+    const initial = name.charAt(0).toUpperCase();
+    
+    // Desktop
+    const avatarDesktop = document.getElementById('avatarDesktop');
+    const userNameDesktop = document.getElementById('userNameDesktop');
+    const userEmailDesktop = document.getElementById('userEmailDesktop');
+    if (avatarDesktop) avatarDesktop.textContent = initial;
+    if (userNameDesktop) userNameDesktop.textContent = name;
+    if (userEmailDesktop) userEmailDesktop.textContent = email;
+    
+    // Mobile
+    const mobileAvatar = document.getElementById('mobileAvatar');
+    const mobileUserName = document.getElementById('mobileUserName');
+    const mobileUserEmail = document.getElementById('mobileUserEmail');
+    if (mobileAvatar) mobileAvatar.textContent = initial;
+    if (mobileUserName) mobileUserName.textContent = name;
+    if (mobileUserEmail) mobileUserEmail.textContent = email;
+    
+    // Carrega dados do app
+    if (typeof loadDashboard === 'function') loadDashboard();
+    if (typeof loadTransactions === 'function') loadTransactions();
+    
+  } else {
+    // Usuário não logado
+    document.getElementById('loginPage')?.classList.add('active');
+    document.getElementById('sidebar')?.style.setProperty('display', 'none');
+    document.getElementById('mainContent')?.style.display = 'none';
+    document.getElementById('bottomNav')?.style.display = 'none';
+    document.getElementById('mobileUserBar')?.style.display = 'none';
+  }
+}
 
+// Login com email/senha
+async function doLogin() {
+  const email = document.getElementById('loginEmail')?.value;
+  const password = document.getElementById('loginPassword')?.value;
+  
+  if (!email || !password) {
+    showToast('❌ Preencha e-mail e senha');
+    return;
+  }
+  
+  const { data, error } = await sb.auth.signInWithPassword({ 
+    email, 
+    password 
+  });
+  
+  if (error) {
+    if (error.message.includes('Invalid login')) {
+      showToast('❌ E-mail ou senha incorretos');
+    } else if (error.message.includes('Email not confirmed')) {
+      showToast('❌ Confirme seu e-mail primeiro');
+    } else {
+      showToast('❌ ' + error.message);
+    }
+    return;
+  }
+  
+  await checkSession();
+  showToast('✅ Login realizado com sucesso!');
+}
+
+// Criar conta
+async function doSignUp() {
+  const email = document.getElementById('loginEmail')?.value;
+  const password = document.getElementById('loginPassword')?.value;
+  
+  if (!email || !password) {
+    showToast('❌ Preencha e-mail e senha');
+    return;
+  }
+  
+  if (password.length < 6) {
+    showToast('❌ Senha deve ter no mínimo 6 caracteres');
+    return;
+  }
+  
+  const { data, error } = await sb.auth.signUp({ 
+    email, 
+    password,
+    options: {
+      emailRedirectTo: window.location.origin
+    }
+  });
+  
+  if (error) {
+    showToast('❌ ' + error.message);
+    return;
+  }
+  
+  if (data.user) {
+    showToast('✅ Conta criada! Verifique seu e-mail.');
+    // Muda para modo login
+    toggleMode();
+  }
+}
+
+// Logout
+async function doLogout() {
+  const { error } = await sb.auth.signOut();
+  if (error) {
+    showToast('❌ Erro ao sair: ' + error.message);
+  } else {
+    await checkSession();
+    showToast('✅ Até logo!');
+  }
+}
+
+// Alternar entre login e cadastro
+let isLoginMode = true;
+function toggleMode() {
+  isLoginMode = !isLoginMode;
+  const loginTitle = document.getElementById('loginTitle');
+  const loginSub = document.getElementById('loginSub');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginFooter = document.getElementById('loginFooter');
+  const googleBtn = document.querySelector('.google-btn');
+  
+  if (isLoginMode) {
+    if (loginTitle) loginTitle.textContent = 'Bem-vindo de volta';
+    if (loginSub) loginSub.textContent = 'Faça login para acessar seu painel financeiro.';
+    if (loginBtn) loginBtn.textContent = 'Entrar';
+    if (loginBtn) loginBtn.onclick = doLogin;
+    if (loginFooter) loginFooter.innerHTML = 'Não tem conta? <a onclick="toggleMode()">Criar conta grátis</a>';
+    if (googleBtn) googleBtn.style.display = 'flex';
+  } else {
+    if (loginTitle) loginTitle.textContent = 'Criar conta';
+    if (loginSub) loginSub.textContent = 'Cadastre-se para começar a controlar suas finanças.';
+    if (loginBtn) loginBtn.textContent = 'Cadastrar';
+    if (loginBtn) loginBtn.onclick = doSignUp;
+    if (loginFooter) loginFooter.innerHTML = 'Já tem conta? <a onclick="toggleMode()">Fazer login</a>';
+    if (googleBtn) googleBtn.style.display = 'none';
+  }
+}
+
+// Toast notification
+function showToast(message, isError = false) {
+  let toast = document.querySelector('.toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'toast';
+    document.body.appendChild(toast);
+  }
+  
+  toast.textContent = message;
+  toast.style.color = isError ? 'var(--red)' : 'var(--green)';
+  toast.style.borderColor = isError ? 'var(--red)' : 'var(--green)';
+  toast.classList.add('show');
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+// Navegação entre páginas
+function showPage(pageId, element, type = 'sidebar') {
+  // Esconde todas as páginas
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
+  
+  // Mostra a página selecionada
+  const targetPage = document.getElementById(`page-${pageId}`);
+  if (targetPage) targetPage.classList.add('active');
+  
+  // Atualiza active nos menus
+  if (type === 'sidebar') {
+    document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+      item.classList.remove('active');
+    });
+    if (element) element.classList.add('active');
+  } else {
+    document.querySelectorAll('.bottom-nav .bn-item').forEach(item => {
+      item.classList.remove('active');
+    });
+    if (element) element.classList.add('active');
+  }
+}
+
+// Funções placeholder (você precisa implementar conforme seu app)
+async function loadDashboard() {
+  console.log('Carregando dashboard...');
+  // Implemente sua lógica aqui
+}
+
+async function loadTransactions() {
+  console.log('Carregando transações...');
+  // Implemente sua lógica aqui
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+  checkSession();
+  
+  // Adicionar listener para Enter nos inputs de login
+  const emailInput = document.getElementById('loginEmail');
+  const passwordInput = document.getElementById('loginPassword');
+  
+  if (emailInput && passwordInput) {
+    const handleEnter = (e) => {
+      if (e.key === 'Enter') {
+        if (isLoginMode) doLogin();
+        else doSignUp();
+      }
+    };
+    emailInput.addEventListener('keypress', handleEnter);
+    passwordInput.addEventListener('keypress', handleEnter);
+  }
+});
+
+// Expor funções globalmente
+window.doLoginGoogle = doLoginGoogle;
+window.doLogin = doLogin;
+window.doSignUp = doSignUp;
+window.doLogout = doLogout;
+window.toggleMode = toggleMode;
+window.showPage = showPage;
+window.showToast = showToast;
+window.loadDashboard = loadDashboard;
+window.loadTransactions = loadTransactions;
 </script>
 </body>
 </html>
