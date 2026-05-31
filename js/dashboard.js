@@ -1,5 +1,5 @@
 // ============================================
-// DASHBOARD (CORRIGIDO - MOSTRA SALDO DAS CONTAS)
+// DASHBOARD (COMPLETO - COM GRÁFICOS)
 // ============================================
 const Dashboard = {
   update() {
@@ -8,23 +8,27 @@ const Dashboard = {
     this.updateIndicators();
     this.updateAccountsSummary();
     this.updateAccountsSummaryCard();
+    
+    // Atualizar gráficos avançados
+    if (window.Charts) {
+      setTimeout(() => {
+        Charts.renderForecastChart();
+        Charts.renderComparisonChart();
+        Charts.renderGoalsVsActual();
+      }, 100);
+    }
   },
   
   updateMainCards() {
-    // Calcular saldo total de TODAS as contas
     let totalBalance = 0;
     if (AppState.accounts && AppState.accounts.length > 0) {
       totalBalance = AppState.accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
     }
     
-    // Calcular receitas e despesas totais
     const totalIncome = AppState.transactions.filter(t => t.type === 'in').reduce((sum, t) => sum + parseFloat(t.amount), 0);
     const totalExpense = AppState.transactions.filter(t => t.type === 'out').reduce((sum, t) => sum + parseFloat(t.amount), 0);
-    
-    // Calcular economia
     const savingsRate = totalIncome > 0 ? ((totalBalance / totalIncome) * 100).toFixed(0) : 0;
     
-    // Atualizar elementos
     const totalBalanceEl = document.getElementById('totalBalance');
     const savingsRateEl = document.getElementById('savingsRate');
     
@@ -52,7 +56,6 @@ const Dashboard = {
   },
   
   updateIndicators() {
-    // Total em bancos (excluindo carteira/dinheiro)
     let bankBalance = 0;
     let walletBalance = 0;
     
@@ -75,7 +78,6 @@ const Dashboard = {
     if (totalWalletBalanceEl) totalWalletBalanceEl.innerHTML = `R$ ${Utils.formatMoney(walletBalance)}`;
     if (activeGoalsEl) activeGoalsEl.innerHTML = AppState.goals?.length || 0;
     
-    // Contas a vencer (próximos 7 dias)
     if (AppState.bills) {
       const today = new Date();
       const nextWeek = new Date();
@@ -91,7 +93,6 @@ const Dashboard = {
   },
   
   updateAccountsSummary() {
-    // Total de todas as contas
     let totalAccountsBalance = 0;
     if (AppState.accounts) {
       totalAccountsBalance = AppState.accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
@@ -115,21 +116,20 @@ const Dashboard = {
     if (!container) return;
     
     if (!AppState.accounts || AppState.accounts.length === 0) {
-      container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Nenhuma conta cadastrada</div>';
+      container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);width:100%;">Nenhuma conta cadastrada</div>';
       return;
     }
     
     container.innerHTML = AppState.accounts.map(acc => `
-      <div style="text-align:center; min-width: 120px; background:var(--bg3); padding:12px; border-radius:12px;">
+      <div style="text-align:center; min-width: 100px; background:var(--bg3); padding:12px; border-radius:12px;">
         <div style="font-size: 28px;">${acc.icon || '🏦'}</div>
-        <div style="font-weight: 600; font-size: 13px; margin-top: 5px;">${Utils.escapeHtml(acc.name)}</div>
-        <div style="font-size: 16px; font-weight: 700; color: var(--green); margin-top: 5px;">R$ ${Utils.formatMoney(acc.balance)}</div>
+        <div style="font-weight: 600; font-size: 12px; margin-top: 5px;">${Utils.escapeHtml(acc.name)}</div>
+        <div style="font-size: 14px; font-weight: 700; color: var(--green); margin-top: 5px;">R$ ${Utils.formatMoney(acc.balance)}</div>
         <div style="font-size: 10px; color: var(--muted);">${acc.bank}</div>
       </div>
     `).join('');
   },
   
-  // Função para mostrar detalhes de cada conta
   showAccountDetails() {
     if (!AppState.accounts || AppState.accounts.length === 0) {
       Utils.showToast('Nenhuma conta cadastrada');
