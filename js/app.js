@@ -9,12 +9,12 @@ async function init() {
   Events.init();
   Alerts.init();
   
-  // Carregar todos os módulos após login
+  // Carregar contas primeiro
   if (AppState.user) {
     await Accounts.load();
     await Transactions.load();
-    await Bills.load();
-    await Installments.load();
+    if (window.Bills) await Bills.load();
+    if (window.Installments) await Installments.load();
     if (window.Reports) Reports.init();
   }
   

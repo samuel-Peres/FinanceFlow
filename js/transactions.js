@@ -1,21 +1,27 @@
 // ============================================
-// TRANSAÇÕES (ATUALIZADO COM CONTAS)
+// TRANSAÇÕES (CORRIGIDO)
 // ============================================
 const Transactions = {
   async load() {
     if (!AppState.user) return;
-    const { data, error } = await sb
-      .from('transactions')
-      .select('*')
-      .eq('user_id', AppState.user.id)
-      .order('date', { ascending: false });
     
-    if (error) throw error;
-    AppState.transactions = data || [];
-    this.render();
-    Dashboard.update();
-    if (window.Goals) Goals.render();
-    if (window.Charts) Charts.render();
+    try {
+      const { data, error } = await sb
+        .from('transactions')
+        .select('*')
+        .eq('user_id', AppState.user.id)
+        .order('date', { ascending: false });
+      
+      if (error) throw error;
+      AppState.transactions = data || [];
+      this.render();
+      Dashboard.update();
+      if (window.Goals) Goals.render();
+      if (window.Charts) Charts.render();
+    } catch (error) {
+      console.error('Erro ao carregar transações:', error);
+      Utils.showToast('❌ Erro ao carregar transações: ' + error.message);
+    }
   },
   
   render() {
@@ -27,7 +33,7 @@ const Transactions = {
     const tbody = document.getElementById('transactionsList');
     if (!tbody) return;
     
-    if (AppState.transactions.length === 0) {
+    if (!AppState.transactions || AppState.transactions.length === 0) {
       tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px">Nenhuma transação cadastrada</td></tr>';
       return;
     }
@@ -60,17 +66,17 @@ const Transactions = {
     const recentDiv = document.getElementById('recentTransactions');
     if (!recentDiv) return;
     
-    const recentes = AppState.transactions.slice(0, 5);
-    if (recentes.length === 0) {
+    if (!AppState.transactions || AppState.transactions.length === 0) {
       recentDiv.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Nenhuma transação ainda</div>';
       return;
     }
     
+    const recentes = AppState.transactions.slice(0, 5);
     recentDiv.innerHTML = recentes.map(t => {
       const typeDisplay = t.type === 'in' ? 'income' : 'expense';
       const account = AppState.accounts?.find(a => a.id === t.account_id);
       return `
-        <div class="tx-item">
+        <div class="tx-item" onclick="Transactions.edit('${t.id}')">
           <div class="tx-icon" style="background:${typeDisplay === 'expense' ? 'var(--red2)' : 'var(--green2)'}">${typeDisplay === 'expense' ? '💸' : '💰'}</div>
           <div class="tx-info">
             <div class="tx-name">${Utils.escapeHtml(t.name)}</div>
@@ -126,58 +132,124 @@ const Transactions = {
     document.querySelectorAll('.tx-btn-del').forEach(btn => btn.onclick = () => this.delete(btn.dataset.id));
   },
   
-  async save(data) {
-    let error;
-    if (AppState.editId) {
-      const { error: updateError } = await sb.from('transactions').update(data).eq('id', AppState.editId);
-      error = updateError;
-    } else {
-      const { error: insertError } = await sb.from('transactions').insert([data]);
-      error = insertError;
+  async save() {
+    try {
+      const accountId = document.getElementById('transactionAccount')?.value;
+      const type = document.getElementById('transactionType').value;
+      const category = document.getElementById('transactionCategory').value;
+      const name = document.getElementById('transactionDescription').value;
+      const amount = parseFloat(document.getElementById('transactionAmount').value);
+      const date = document.getElementById('transactionDate').value;
+      
+      if (!name || !amount || !date) {
+        Utils.showToast('❌ Preencha todos os campos');
+        return;
+      }
+      
+      if (!accountId) {
+        Utils.showToast('❌ Selecione uma conta');
+        return;
+      }
+      
+      const transaction = {
+        user_id: AppState.user.id,
+        account_id: accountId,
+        type: type === 'income' ? 'in' : 'out',
+        category: category,
+        name: name,
+        amount: amount,
+        date: date
+      };
+      
+      let error;
+      if (AppState.editId) {
+        const { error: updateError } = await sb
+          .from('transactions')
+          .update(transaction)
+          .eq('id', AppState.editId);
+        error = updateError;
+      } else {
+        const { error: insertError } = await sb
+          .from('transactions')
+          .insert([transaction]);
+        error = insertError;
+      }
+      
+      if (error) throw error;
+      
+      Utils.showToast('✅ Transação salva com sucesso!');
+      this.closeModal();
+      
+      // Recarregar dados
+      await Accounts.load();
+      await this.load();
+      
+    } catch (error) {
+      console.error('Erro ao salvar:', error);
+      Utils.showToast('❌ Erro ao salvar: ' + error.message);
     }
-    if (error) throw error;
-    Utils.showToast('✅ Transação salva!');
-    this.closeModal();
-    await this.load();
-    if (window.Accounts) await Accounts.load();
   },
   
   async edit(id) {
-    const transaction = AppState.transactions.find(t => t.id === id);
-    if (!transaction) return;
-    AppState.editId = id;
-    document.getElementById('modalTitle').textContent = 'Editar Transação';
-    document.getElementById('transactionAccount').value = transaction.account_id || '';
-    document.getElementById('transactionType').value = transaction.type === 'in' ? 'income' : 'expense';
-    document.getElementById('transactionCategory').value = transaction.category || 'Alimentação';
-    document.getElementById('transactionDescription').value = transaction.name;
-    document.getElementById('transactionAmount').value = transaction.amount;
-    document.getElementById('transactionDate').value = transaction.date;
-    this.openModal();
+    try {
+      const transaction = AppState.transactions.find(t => t.id === id);
+      if (!transaction) return;
+      
+      AppState.editId = id;
+      document.getElementById('modalTitle').textContent = 'Editar Transação';
+      document.getElementById('transactionAccount').value = transaction.account_id || '';
+      document.getElementById('transactionType').value = transaction.type === 'in' ? 'income' : 'expense';
+      document.getElementById('transactionCategory').value = transaction.category || 'Alimentação';
+      document.getElementById('transactionDescription').value = transaction.name;
+      document.getElementById('transactionAmount').value = transaction.amount;
+      document.getElementById('transactionDate').value = transaction.date;
+      this.openModal();
+    } catch (error) {
+      console.error('Erro ao editar:', error);
+      Utils.showToast('❌ Erro ao editar transação');
+    }
   },
   
   async delete(id) {
     if (!confirm('Tem certeza que deseja excluir esta transação?')) return;
-    const { error } = await sb.from('transactions').delete().eq('id', id);
-    if (error) throw error;
-    Utils.showToast('✅ Transação excluída!');
-    await this.load();
-    if (window.Accounts) await Accounts.load();
+    
+    try {
+      const { error } = await sb
+        .from('transactions')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      
+      Utils.showToast('✅ Transação excluída!');
+      await Accounts.load();
+      await this.load();
+      
+    } catch (error) {
+      console.error('Erro ao excluir:', error);
+      Utils.showToast('❌ Erro ao excluir: ' + error.message);
+    }
   },
   
   openModal() {
+    // Limpar campos
+    document.getElementById('modalTitle').textContent = 'Nova Transação';
+    document.getElementById('transactionDescription').value = '';
+    document.getElementById('transactionAmount').value = '';
+    document.getElementById('transactionDate').value = Utils.getCurrentDate();
+    document.getElementById('transactionType').value = 'income';
+    
+    // Carregar contas no select
     const accountSelect = document.getElementById('transactionAccount');
     if (accountSelect) {
-      accountSelect.innerHTML = '<option value="">Selecionar conta</option>' + (window.Accounts?.getSelectOptions() || '');
+      if (AppState.accounts && AppState.accounts.length > 0) {
+        accountSelect.innerHTML = '<option value="">Selecionar conta</option>' + 
+          AppState.accounts.map(acc => `<option value="${acc.id}">${acc.icon || '🏦'} ${acc.name} (R$ ${Utils.formatMoney(acc.balance)})</option>`).join('');
+      } else {
+        accountSelect.innerHTML = '<option value="">Nenhuma conta cadastrada</option>';
+      }
     }
     
-    if (!AppState.editId) {
-      document.getElementById('modalTitle').textContent = 'Nova Transação';
-      document.getElementById('transactionDescription').value = '';
-      document.getElementById('transactionAmount').value = '';
-      document.getElementById('transactionDate').value = Utils.getCurrentDate();
-      document.getElementById('transactionType').value = 'income';
-    }
     document.getElementById('transactionModal').classList.add('open');
   },
   
