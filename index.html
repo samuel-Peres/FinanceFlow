@@ -58,17 +58,33 @@
       <span class="nav-icon">📊</span>
       <span class="nav-text">Dashboard</span>
     </div>
+    <div class="nav-item" data-page="accounts">
+      <span class="nav-icon">🏦</span>
+      <span class="nav-text">Contas</span>
+    </div>
     <div class="nav-item" data-page="transactions">
       <span class="nav-icon">💳</span>
       <span class="nav-text">Transações</span>
     </div>
-    <div class="nav-item" data-page="export">
-      <span class="nav-icon">📥</span>
-      <span class="nav-text">Exportar</span>
+    <div class="nav-item" data-page="bills">
+      <span class="nav-icon">📅</span>
+      <span class="nav-text">Contas a Pagar</span>
+    </div>
+    <div class="nav-item" data-page="installments">
+      <span class="nav-icon">💳</span>
+      <span class="nav-text">Parcelamentos</span>
+    </div>
+    <div class="nav-item" data-page="reports">
+      <span class="nav-icon">📈</span>
+      <span class="nav-text">Relatórios</span>
     </div>
   </div>
   <div class="nav-section">
     <div class="nav-label">Sistema</div>
+    <div class="nav-item" data-page="export">
+      <span class="nav-icon">📥</span>
+      <span class="nav-text">Exportar</span>
+    </div>
     <div class="nav-item" data-page="alerts">
       <span class="nav-icon">🔔</span>
       <span class="nav-text">Alertas</span>
@@ -89,7 +105,7 @@
   </div>
 </nav>
 
-<!-- MOBILE USER BAR - CORRIGIDA -->
+<!-- MOBILE USER BAR -->
 <div id="mobileUserBar" style="display:none;position:fixed;bottom:62px;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:12px 20px;z-index:39;align-items:center;justify-content:space-between;box-shadow:0 -4px 20px rgba(0,0,0,0.1)">
   <div style="display:flex;align-items:center;gap:12px">
     <div class="avatar" id="mobileAvatar" style="width:36px;height:36px;font-size:14px">U</div>
@@ -103,37 +119,19 @@
 
 <!-- BOTTOM NAV (MOBILE) -->
 <nav class="bottom-nav" id="bottomNav" style="display:none">
-  <div class="bn-item" data-page="dashboard">
-    <div class="bn-dot"></div>
-    <div class="bn-icon">📊</div>
-    <div class="bn-label">Home</div>
-  </div>
-  <div class="bn-item" data-page="transactions">
-    <div class="bn-dot"></div>
-    <div class="bn-icon">💳</div>
-    <div class="bn-label">Transações</div>
-  </div>
-  <div class="bn-item" data-page="export">
-    <div class="bn-dot"></div>
-    <div class="bn-icon">📥</div>
-    <div class="bn-label">Exportar</div>
-  </div>
-  <div class="bn-item" data-page="alerts">
-    <div class="bn-dot"></div>
-    <div class="bn-icon">🔔</div>
-    <div class="bn-label">Alertas</div>
-  </div>
-  <div class="bn-item" data-page="config">
-    <div class="bn-dot"></div>
-    <div class="bn-icon">⚙️</div>
-    <div class="bn-label">Config</div>
-  </div>
+  <div class="bn-item" data-page="dashboard"><div class="bn-dot"></div><div class="bn-icon">📊</div><div class="bn-label">Home</div></div>
+  <div class="bn-item" data-page="accounts"><div class="bn-dot"></div><div class="bn-icon">🏦</div><div class="bn-label">Contas</div></div>
+  <div class="bn-item" data-page="transactions"><div class="bn-dot"></div><div class="bn-icon">💳</div><div class="bn-label">Transações</div></div>
+  <div class="bn-item" data-page="reports"><div class="bn-dot"></div><div class="bn-icon">📈</div><div class="bn-label">Relatórios</div></div>
+  <div class="bn-item" data-page="config"><div class="bn-dot"></div><div class="bn-icon">⚙️</div><div class="bn-label">Config</div></div>
 </nav>
 
 <!-- MAIN CONTENT -->
 <main class="main" id="mainContent" style="display:none">
   
-  <!-- DASHBOARD PAGE -->
+  <!-- ============================================ -->
+  <!-- DASHBOARD PAGE (MELHORADO) -->
+  <!-- ============================================ -->
   <div class="page active" id="page-dashboard">
     <div class="page-header">
       <div>
@@ -143,38 +141,41 @@
       <button class="btn btn-primary" id="newTransactionBtn">+ Nova transação</button>
     </div>
     
+    <!-- Cards Principais -->
     <div class="cards-grid">
-      <div class="card">
-        <div class="card-label">SALDO TOTAL</div>
-        <div class="card-value green" id="totalBalance">R$ 0,00</div>
-        <div class="card-bg-icon">💰</div>
+      <div class="card"><div class="card-label">SALDO TOTAL</div><div class="card-value green" id="totalBalance">R$ 0,00</div><div class="card-bg-icon">💰</div></div>
+      <div class="card"><div class="card-label">RECEITAS (MÊS)</div><div class="card-value green" id="monthlyIncome">R$ 0,00</div><div class="card-bg-icon">📈</div></div>
+      <div class="card"><div class="card-label">DESPESAS (MÊS)</div><div class="card-value red" id="monthlyExpense">R$ 0,00</div><div class="card-bg-icon">📉</div></div>
+      <div class="card"><div class="card-label">ECONOMIA</div><div class="card-value yellow" id="savingsRate">0%</div><div class="card-bg-icon">🎯</div></div>
+    </div>
+    
+    <!-- Cards de Indicadores Avançados -->
+    <div class="cards-grid" style="grid-template-columns: repeat(4,1fr); margin-top: -5px;">
+      <div class="card"><div class="card-label">🏦 TOTAL EM BANCOS</div><div class="card-value green" id="totalBankBalance">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">👛 TOTAL EM CARTEIRA</div><div class="card-value green" id="totalWalletBalance">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">🏆 METAS ATIVAS</div><div class="card-value yellow" id="activeGoals">0</div></div>
+      <div class="card"><div class="card-label">📅 CONTAS A VENCER</div><div class="card-value red" id="pendingBillsCount">0</div></div>
+    </div>
+    
+    <!-- Gráficos -->
+    <div class="charts-row" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title">📊 Gastos por Categoria</div></div>
+        <canvas id="expenseChart" style="max-height:200px; width:100%"></canvas>
       </div>
-      <div class="card">
-        <div class="card-label">RECEITAS</div>
-        <div class="card-value green" id="totalIncome">R$ 0,00</div>
-        <div class="card-bg-icon">📈</div>
-      </div>
-      <div class="card">
-        <div class="card-label">DESPESAS</div>
-        <div class="card-value red" id="totalExpense">R$ 0,00</div>
-        <div class="card-bg-icon">📉</div>
-      </div>
-      <div class="card">
-        <div class="card-label">ECONOMIA</div>
-        <div class="card-value yellow" id="savingsRate">0%</div>
-        <div class="card-bg-icon">🎯</div>
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title">🏦 Distribuição por Banco</div></div>
+        <canvas id="bankDistributionChart" style="max-height:200px; width:100%"></canvas>
       </div>
     </div>
     
-    <!-- CHARTS MODULE -->
-    <div class="chart-card" id="chartsContainer">
-      <div class="chart-header">
-        <div class="chart-title">📊 Gastos por Categoria</div>
-      </div>
-      <canvas id="expenseChart" style="max-height:250px; width:100%"></canvas>
+    <!-- Gráfico de Evolução Patrimonial -->
+    <div class="chart-card">
+      <div class="chart-header"><div class="chart-title">📈 Evolução Patrimonial (6 meses)</div></div>
+      <canvas id="evolutionChart" style="max-height:200px; width:100%"></canvas>
     </div>
     
-    <!-- GOALS MODULE -->
+    <!-- Metas -->
     <div class="chart-card" id="goalsContainer">
       <div class="chart-header">
         <div class="chart-title">🎯 Minhas Metas</div>
@@ -183,59 +184,106 @@
       <div id="goalsList"></div>
     </div>
     
+    <!-- Últimas Transações -->
     <div class="chart-card">
       <div class="chart-header">
         <div class="chart-title">📋 Últimas Transações</div>
         <button class="btn btn-ghost" id="viewAllBtn">Ver todas →</button>
       </div>
-      <div id="recentTransactions" class="tx-list">
-        <div style="text-align:center;padding:30px;color:var(--muted)">Nenhuma transação ainda</div>
-      </div>
+      <div id="recentTransactions" class="tx-list"></div>
     </div>
   </div>
 
-  <!-- TRANSACTIONS PAGE -->
-  <div class="page" id="page-transactions">
+  <!-- ============================================ -->
+  <!-- CONTAS BANCÁRIAS PAGE -->
+  <!-- ============================================ -->
+  <div class="page" id="page-accounts">
     <div class="page-header">
       <div>
-        <div class="page-title">Transações</div>
-        <div class="page-sub">Gerencie todas suas movimentações</div>
+        <div class="page-title">Contas Bancárias</div>
+        <div class="page-sub">Gerencie suas contas e saldos</div>
       </div>
-      <button class="btn btn-primary" id="newTransactionBtn2">+ Nova transação</button>
+      <button class="btn btn-primary" onclick="Accounts.openModal()">+ Nova Conta</button>
     </div>
     
-    <div class="table-card">
-      <div class="table-toolbar">
-        <div class="search-wrap">
-          <span>🔍</span>
-          <input type="text" placeholder="Buscar transação..." id="searchInput">
-        </div>
-        <div class="filter-row">
-          <select class="filter-select" id="typeFilter">
-            <option value="all">Todos</option>
-            <option value="income">Receitas</option>
-            <option value="expense">Despesas</option>
-          </select>
-          <select class="filter-select" id="categoryFilter">
-            <option value="all">Todas categorias</option>
-            <option value="Alimentação">🍔 Alimentação</option>
-            <option value="Transporte">🚗 Transporte</option>
-            <option value="Moradia">🏠 Moradia</option>
-            <option value="Salário">💼 Salário</option>
-            <option value="Lazer">🎬 Lazer</option>
-            <option value="Saúde">🏥 Saúde</option>
-            <option value="Outros">📌 Outros</option>
-          </select>
-        </div>
+    <div class="cards-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:20px;">
+      <div class="card"><div class="card-label">💰 TOTAL EM CONTAS</div><div class="card-value green" id="totalAccountsBalance">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">🏦 NÚMERO DE CONTAS</div><div class="card-value" id="accountsCount">0</div></div>
+    </div>
+    
+    <div id="accountsList" class="accounts-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:16px;"></div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- CONTAS A PAGAR PAGE -->
+  <!-- ============================================ -->
+  <div class="page" id="page-bills">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Contas a Pagar</div>
+        <div class="page-sub">Gerencie suas obrigações financeiras</div>
       </div>
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Valor</th><th></th></tr>
-          </thead>
-          <tbody id="transactionsList"></tbody>
-        </table>
+      <button class="btn btn-primary" onclick="Bills.openModal()">+ Nova Conta</button>
+    </div>
+    
+    <div class="cards-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:20px;">
+      <div class="card"><div class="card-label">⏳ TOTAL PENDENTE</div><div class="card-value yellow" id="pendingBillsTotal">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">⚠️ CONTAS ATRASADAS</div><div class="card-value red" id="overdueBillsTotal">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">📅 PRÓXIMOS 7 DIAS</div><div class="card-value" id="upcomingBillsCount">0</div></div>
+    </div>
+    
+    <div id="billsList" class="bills-list"></div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- PARCELAMENTOS PAGE -->
+  <!-- ============================================ -->
+  <div class="page" id="page-installments">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Parcelamentos</div>
+        <div class="page-sub">Acompanhe suas compras parceladas</div>
       </div>
+      <button class="btn btn-primary" onclick="Installments.openModal()">+ Novo Parcelamento</button>
+    </div>
+    
+    <div id="installmentsList" class="installments-list"></div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- RELATÓRIOS PAGE -->
+  <!-- ============================================ -->
+  <div class="page" id="page-reports">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Relatórios</div>
+        <div class="page-sub">Análise detalhada das suas finanças</div>
+      </div>
+    </div>
+    
+    <div id="reportControls"></div>
+    
+    <div class="cards-grid" style="grid-template-columns:repeat(4,1fr); margin-bottom:20px;">
+      <div class="card"><div class="card-label">💰 RECEITAS</div><div class="card-value green" id="reportIncome">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">💸 DESPESAS</div><div class="card-value red" id="reportExpense">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">⚖️ SALDO</div><div class="card-value" id="reportBalance">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">📊 TOTAL TRANS.</div><div class="card-value" id="reportTransactionCount">0</div></div>
+    </div>
+    
+    <div class="cards-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:20px;">
+      <div class="card"><div class="card-label">🏆 CATEGORIA MAIS USADA</div><div class="card-value" id="reportTopCategory">-</div></div>
+      <div class="card"><div class="card-label">📈 MAIOR RECEITA</div><div class="card-value green" id="reportMaxIncome">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">📉 MAIOR DESPESA</div><div class="card-value red" id="reportMaxExpense">R$ 0,00</div></div>
+    </div>
+    
+    <div class="chart-card">
+      <div class="chart-header"><div class="chart-title">📊 Gastos por Categoria (Período)</div></div>
+      <canvas id="reportCategoryChart" style="max-height:250px; width:100%"></canvas>
+    </div>
+    
+    <div class="chart-card">
+      <div class="chart-header"><div class="chart-title">📋 Transações do Período</div></div>
+      <div id="reportTransactions"></div>
     </div>
   </div>
 
@@ -248,21 +296,9 @@
       </div>
     </div>
     <div class="export-grid">
-      <div class="export-card" data-format="csv">
-        <div class="export-card-icon">📊</div>
-        <div class="export-card-title">CSV</div>
-        <div class="export-card-desc">Exportar para Excel / Planilhas</div>
-      </div>
-      <div class="export-card" data-format="json">
-        <div class="export-card-icon">📄</div>
-        <div class="export-card-title">JSON</div>
-        <div class="export-card-desc">Formato estruturado para desenvolvedores</div>
-      </div>
-      <div class="export-card" data-format="pdf">
-        <div class="export-card-icon">📑</div>
-        <div class="export-card-title">PDF</div>
-        <div class="export-card-desc">Relatório formatado para impressão</div>
-      </div>
+      <div class="export-card" data-format="csv"><div class="export-card-icon">📊</div><div class="export-card-title">CSV</div><div class="export-card-desc">Exportar para Excel / Planilhas</div></div>
+      <div class="export-card" data-format="json"><div class="export-card-icon">📄</div><div class="export-card-title">JSON</div><div class="export-card-desc">Formato estruturado</div></div>
+      <div class="export-card" data-format="pdf"><div class="export-card-icon">📑</div><div class="export-card-title">PDF</div><div class="export-card-desc">Relatório formatado</div></div>
     </div>
   </div>
 
@@ -275,25 +311,8 @@
       </div>
     </div>
     <div class="config-section">
-      <div class="config-header">
-        <div class="config-header-icon">💰</div>
-        <div>
-          <div class="config-title">Alerta de Gasto Excessivo</div>
-          <div class="config-sub">Receba notificação quando gastar mais que o limite</div>
-        </div>
-      </div>
-      <div class="config-body">
-        <div class="alert-item">
-          <div class="alert-info">
-            <span>⚠️</span>
-            <div>
-              <div class="config-title">Limite mensal</div>
-              <div class="config-sub">Notificar quando despesas ultrapassarem</div>
-            </div>
-          </div>
-          <input type="number" id="spendingLimit" placeholder="R$ 0,00" class="form-input" style="width:120px">
-        </div>
-      </div>
+      <div class="config-header"><div class="config-header-icon">💰</div><div><div class="config-title">Alerta de Gasto Excessivo</div><div class="config-sub">Receba notificação quando gastar mais que o limite</div></div></div>
+      <div class="config-body"><div class="alert-item"><div class="alert-info"><span>⚠️</span><div><div class="config-title">Limite mensal</div><div class="config-sub">Notificar quando despesas ultrapassarem</div></div></div><input type="number" id="spendingLimit" placeholder="R$ 0,00" class="form-input" style="width:120px"></div></div>
     </div>
   </div>
 
@@ -306,48 +325,32 @@
       </div>
     </div>
     <div class="config-section">
-      <div class="config-header">
-        <div class="config-header-icon">👤</div>
-        <div>
-          <div class="config-title">Perfil</div>
-          <div class="config-sub">Suas informações pessoais</div>
-        </div>
-      </div>
-      <div class="config-body">
-        <div style="display:flex;align-items:center;gap:15px;margin-bottom:15px">
-          <div class="avatar" id="profileAvatar" style="width:48px;height:48px;font-size:18px">U</div>
-          <div>
-            <div id="profileName" style="font-weight:600;font-size:15px"></div>
-            <div id="profileEmail" style="font-size:12px;color:var(--muted)"></div>
-          </div>
-        </div>
-        <button class="btn btn-outline" id="configLogoutBtn" style="width:100%">Sair da conta</button>
-      </div>
+      <div class="config-header"><div class="config-header-icon">👤</div><div><div class="config-title">Perfil</div><div class="config-sub">Suas informações pessoais</div></div></div>
+      <div class="config-body"><div style="display:flex;align-items:center;gap:15px;margin-bottom:15px"><div class="avatar" id="profileAvatar" style="width:48px;height:48px;font-size:18px">U</div><div><div id="profileName" style="font-weight:600;font-size:15px"></div><div id="profileEmail" style="font-size:12px;color:var(--muted)"></div></div></div><button class="btn btn-outline" id="configLogoutBtn" style="width:100%">Sair da conta</button></div>
     </div>
     <div class="config-section" id="themeSection">
-      <div class="config-header">
-        <div class="config-header-icon">🎨</div>
-        <div>
-          <div class="config-title">Tema</div>
-          <div class="config-sub">Claro / Escuro</div>
-        </div>
-      </div>
-      <div class="config-body">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span>Alternar tema</span>
-          <div class="toggle" id="themeToggle"></div>
-        </div>
-      </div>
+      <div class="config-header"><div class="config-header-icon">🎨</div><div><div class="config-title">Tema</div><div class="config-sub">Claro / Escuro</div></div></div>
+      <div class="config-body"><div style="display:flex;justify-content:space-between;align-items:center"><span>Alternar tema</span><div class="toggle" id="themeToggle"></div></div></div>
     </div>
   </div>
 </main>
 
-<!-- MODAL - TRANSACTION -->
+<!-- ============================================ -->
+<!-- MODAIS -->
+<!-- ============================================ -->
+
+<!-- MODAL - TRANSACTION (ATUALIZADO COM CONTA) -->
 <div class="modal-overlay" id="transactionModal">
   <div class="modal">
     <div class="modal-title" id="modalTitle">Nova Transação</div>
     <div class="modal-sub">Preencha os dados da movimentação</div>
     <div class="modal-grid">
+      <div class="form-group">
+        <label class="form-label">Conta</label>
+        <select class="form-select" id="transactionAccount">
+          <option value="">Selecionar conta</option>
+        </select>
+      </div>
       <div class="form-group">
         <label class="form-label">Tipo</label>
         <select class="form-select" id="transactionType">
@@ -373,7 +376,7 @@
       </div>
       <div class="form-group">
         <label class="form-label">Valor (R$)</label>
-        <input class="form-input" type="number" id="transactionAmount" placeholder="0,00" step="0.01">
+        <input class="form-input" type="number" id="transactionAmount" step="0.01">
       </div>
       <div class="form-group">
         <label class="form-label">Data</label>
@@ -387,22 +390,166 @@
   </div>
 </div>
 
-<!-- MODAL - GOALS -->
+<!-- MODAL - ACCOUNT -->
+<div class="modal-overlay" id="accountModal">
+  <div class="modal">
+    <div class="modal-title" id="modalAccountTitle">Nova Conta</div>
+    <div class="modal-sub">Adicione uma conta bancária</div>
+    <input type="hidden" id="accountId">
+    <div class="modal-grid">
+      <div class="form-group">
+        <label class="form-label">Nome da Conta</label>
+        <input class="form-input" id="accountName" placeholder="Ex: Nubank, Itaú...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Banco</label>
+        <input class="form-input" id="accountBank" placeholder="Nome do banco">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo</label>
+        <select class="form-select" id="accountType">
+          <option value="corrente">💳 Conta Corrente</option>
+          <option value="poupanca">🏦 Poupança</option>
+          <option value="carteira">👛 Carteira</option>
+          <option value="dinheiro">💵 Dinheiro</option>
+          <option value="investimento">📈 Investimento</option>
+          <option value="cartao">💳 Cartão</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ícone</label>
+        <input class="form-input" id="accountIcon" placeholder="🏦" maxlength="2">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Cor</label>
+        <input class="form-input" type="color" id="accountColor" value="#00e5a0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Saldo Inicial (R$)</label>
+        <input class="form-input" type="number" id="accountBalance" step="0.01">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="Accounts.closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="Accounts.save()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL - BILL -->
+<div class="modal-overlay" id="billModal">
+  <div class="modal">
+    <div class="modal-title">Nova Conta a Pagar</div>
+    <div class="modal-sub">Adicione uma conta para lembrete</div>
+    <div class="modal-grid">
+      <div class="form-group">
+        <label class="form-label">Nome</label>
+        <input class="form-input" id="billName" placeholder="Ex: Energia, Internet...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Valor (R$)</label>
+        <input class="form-input" type="number" id="billAmount" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Data Vencimento</label>
+        <input class="form-input" type="date" id="billDueDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Categoria</label>
+        <select class="form-select" id="billCategory">
+          <option value="Moradia">🏠 Moradia</option>
+          <option value="Água/Luz">💡 Água/Luz</option>
+          <option value="Internet">🌐 Internet</option>
+          <option value="Telefone">📱 Telefone</option>
+          <option value="Educação">📚 Educação</option>
+          <option value="Saúde">🏥 Saúde</option>
+          <option value="Outros">📌 Outros</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Conta de Pagamento</label>
+        <select class="form-select" id="billAccount"></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="Bills.closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="Bills.save()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL - INSTALLMENT -->
+<div class="modal-overlay" id="installmentModal">
+  <div class="modal">
+    <div class="modal-title">Novo Parcelamento</div>
+    <div class="modal-sub">Registre uma compra parcelada</div>
+    <div class="modal-grid">
+      <div class="form-group">
+        <label class="form-label">Descrição</label>
+        <input class="form-input" id="installmentDescription" placeholder="Ex: Celular, Viagem...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Valor Total (R$)</label>
+        <input class="form-input" type="number" id="installmentTotal" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nº Parcelas</label>
+        <input class="form-input" type="number" id="installmentCount" min="1" max="48">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Conta</label>
+        <select class="form-select" id="installmentAccount"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Categoria</label>
+        <select class="form-select" id="installmentCategory">
+          <option value="Eletrônicos">📱 Eletrônicos</option>
+          <option value="Casa">🏠 Casa</option>
+          <option value="Carro">🚗 Carro</option>
+          <option value="Viagem">✈️ Viagem</option>
+          <option value="Educação">📚 Educação</option>
+          <option value="Saúde">🏥 Saúde</option>
+          <option value="Outros">📌 Outros</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Data Início</label>
+        <input class="form-input" type="date" id="installmentStartDate">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="Installments.closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="Installments.save()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL - GOALS (MELHORADO) -->
 <div class="modal-overlay" id="goalModal">
   <div class="modal">
     <div class="modal-title">Nova Meta</div>
     <div class="modal-sub">Defina um objetivo de economia</div>
-    <div class="form-group" style="margin-bottom:12px">
-      <label class="form-label">Nome da Meta</label>
-      <input class="form-input" id="goalName" placeholder="Ex: Viagem, Carro, Casa...">
-    </div>
-    <div class="form-group" style="margin-bottom:12px">
-      <label class="form-label">Valor Alvo (R$)</label>
-      <input class="form-input" type="number" id="goalTarget" placeholder="10.000">
-    </div>
-    <div class="form-group" style="margin-bottom:12px">
-      <label class="form-label">Data Limite</label>
-      <input class="form-input" type="date" id="goalDeadline">
+    <div class="modal-grid">
+      <div class="form-group">
+        <label class="form-label">Nome da Meta</label>
+        <input class="form-input" id="goalName" placeholder="Ex: Viagem, Carro...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Valor Alvo (R$)</label>
+        <input class="form-input" type="number" id="goalTarget">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Valor Atual (R$)</label>
+        <input class="form-input" type="number" id="goalCurrent" value="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Data Limite</label>
+        <input class="form-input" type="date" id="goalDeadline">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Conta Relacionada</label>
+        <select class="form-select" id="goalAccount"></select>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" id="cancelGoalBtn">Cancelar</button>
@@ -415,10 +562,14 @@
 <script src="js/config.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/accounts.js"></script>
 <script src="js/transactions.js"></script>
 <script src="js/dashboard.js"></script>
 <script src="js/charts.js"></script>
 <script src="js/goals.js"></script>
+<script src="js/bills.js"></script>
+<script src="js/installments.js"></script>
+<script src="js/reports.js"></script>
 <script src="js/export.js"></script>
 <script src="js/alerts.js"></script>
 <script src="js/ui.js"></script>
