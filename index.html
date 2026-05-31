@@ -130,7 +130,7 @@
 <main class="main" id="mainContent" style="display:none">
   
   <!-- ============================================ -->
-  <!-- DASHBOARD PAGE (MELHORADO) -->
+  <!-- DASHBOARD PAGE (ATUALIZADO COM RESUMO DE CONTAS) -->
   <!-- ============================================ -->
   <div class="page active" id="page-dashboard">
     <div class="page-header">
@@ -155,6 +155,17 @@
       <div class="card"><div class="card-label">👛 TOTAL EM CARTEIRA</div><div class="card-value green" id="totalWalletBalance">R$ 0,00</div></div>
       <div class="card"><div class="card-label">🏆 METAS ATIVAS</div><div class="card-value yellow" id="activeGoals">0</div></div>
       <div class="card"><div class="card-label">📅 CONTAS A VENCER</div><div class="card-value red" id="pendingBillsCount">0</div></div>
+    </div>
+    
+    <!-- NOVO: Card de Resumo das Contas -->
+    <div class="chart-card" id="accountsSummaryCard" style="cursor: pointer;" onclick="if(window.Dashboard) Dashboard.showAccountDetails()">
+      <div class="chart-header">
+        <div class="chart-title">🏦 Resumo das Suas Contas</div>
+        <button class="btn btn-ghost" onclick="event.stopPropagation(); if(window.Dashboard) Dashboard.showAccountDetails()">Ver Detalhes →</button>
+      </div>
+      <div id="accountsSummaryContent" style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 16px;">
+        <div style="text-align:center;padding:20px;color:var(--muted);width:100%;">Carregando contas...</div>
+      </div>
     </div>
     
     <!-- Gráficos -->
@@ -190,7 +201,9 @@
         <div class="chart-title">📋 Últimas Transações</div>
         <button class="btn btn-ghost" id="viewAllBtn">Ver todas →</button>
       </div>
-      <div id="recentTransactions" class="tx-list"></div>
+      <div id="recentTransactions" class="tx-list">
+        <div style="text-align:center;padding:30px;color:var(--muted)">Nenhuma transação ainda</div>
+      </div>
     </div>
   </div>
 
@@ -211,7 +224,7 @@
       <div class="card"><div class="card-label">🏦 NÚMERO DE CONTAS</div><div class="card-value" id="accountsCount">0</div></div>
     </div>
     
-    <div id="accountsList" class="accounts-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:16px;"></div>
+    <div id="accountsList" class="accounts-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px,1fr)); gap:16px;"></div>
   </div>
 
   <!-- ============================================ -->
@@ -339,7 +352,7 @@
 <!-- MODAIS -->
 <!-- ============================================ -->
 
-<!-- MODAL - TRANSACTION (ATUALIZADO COM CONTA) -->
+<!-- MODAL - TRANSACTION -->
 <div class="modal-overlay" id="transactionModal">
   <div class="modal">
     <div class="modal-title" id="modalTitle">Nova Transação</div>
@@ -524,7 +537,7 @@
   </div>
 </div>
 
-<!-- MODAL - GOALS (MELHORADO) -->
+<!-- MODAL - GOALS -->
 <div class="modal-overlay" id="goalModal">
   <div class="modal">
     <div class="modal-title">Nova Meta</div>
