@@ -1313,3 +1313,22 @@ body {
   white-space: nowrap;
   border-width: 0;
 }
+
+/* ============================================
+   ESCONDER MOBILE USER BAR - MAS MANTER NO DOM
+   ============================================ */
+#mobileUserBar {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
