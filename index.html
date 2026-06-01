@@ -1,17 +1,27 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>FinanceFlow — Controle Financeiro</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="description" content="FinanceFlow - Controle Financeiro Premium">
+  <title>FinanceFlow — Controle Financeiro Premium</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- ============================================ -->
+<!-- LOGIN PAGE PREMIUM -->
+<!-- ============================================ -->
 <div class="login-page active" id="loginPage">
   <div class="login-card">
     <div class="login-logo">
@@ -19,9 +29,9 @@
       <div class="logo-text">Finance<span>Flow</span></div>
     </div>
     <div class="login-title" id="loginTitle">Bem-vindo de volta</div>
-    <div class="login-sub" id="loginSub">Faça login para acessar seu painel financeiro.</div>
+    <div class="login-sub" id="loginSub">Faça login para acessar seu painel financeiro</div>
     
-    <button class="google-btn" id="googleBtn">
+    <button class="btn btn-outline w-full" id="googleBtn" style="margin-bottom: var(--space-4);">
       <svg width="18" height="18" viewBox="0 0 48 48">
         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
         <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -31,27 +41,45 @@
       Continuar com Google
     </button>
     
-    <div class="login-divider"><span>ou entre com e-mail</span></div>
+    <div class="login-divider" style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-5); color: var(--text-tertiary); font-size: var(--text-xs);">
+      <span style="flex: 1; height: 1px; background: var(--border);"></span>
+      <span>ou entre com e-mail</span>
+      <span style="flex: 1; height: 1px; background: var(--border);"></span>
+    </div>
     
-    <div class="input-group">
-      <label class="input-label">E-mail</label>
-      <input class="input-field" type="email" placeholder="seu@email.com" id="loginEmail">
+    <div class="input-group" style="margin-bottom: var(--space-4);">
+      <label class="input-label" style="display: block; margin-bottom: var(--space-2);">E-mail</label>
+      <input class="input-field w-full" type="email" placeholder="seu@email.com" id="loginEmail">
     </div>
-    <div class="input-group">
-      <label class="input-label">Senha</label>
-      <input class="input-field" type="password" placeholder="••••••••" id="loginPassword">
+    <div class="input-group" style="margin-bottom: var(--space-5);">
+      <label class="input-label" style="display: block; margin-bottom: var(--space-2);">Senha</label>
+      <input class="input-field w-full" type="password" placeholder="••••••••" id="loginPassword">
     </div>
-    <button class="login-btn" id="loginBtn">Entrar</button>
-    <div class="login-footer" id="loginFooter">Não tem conta? <a onclick="window.Auth.toggleMode()">Criar conta grátis</a></div>
+    
+    <button class="btn btn-primary w-full" id="loginBtn" style="margin-bottom: var(--space-4);">Entrar</button>
+    
+    <div class="login-footer text-center">
+      Não tem conta? <a onclick="window.Auth?.toggleMode()" style="color: var(--success); cursor: pointer; font-weight: 600;">Criar conta grátis</a>
+    </div>
   </div>
 </div>
 
+<!-- ============================================ -->
 <!-- SIDEBAR (DESKTOP) -->
+<!-- ============================================ -->
 <nav class="sidebar" id="sidebar" style="display:none">
+  <!-- Botão Toggle -->
+  <div class="sidebar-toggle" id="sidebarToggle">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </div>
+  
   <div class="logo">
     <div class="logo-icon">💸</div>
     <div class="logo-text">Finance<span>Flow</span></div>
   </div>
+  
   <div class="nav-section">
     <div class="nav-label">Principal</div>
     <div class="nav-item active" data-page="dashboard">
@@ -79,6 +107,7 @@
       <span class="nav-text">Relatórios</span>
     </div>
   </div>
+  
   <div class="nav-section">
     <div class="nav-label">Sistema</div>
     <div class="nav-item" data-page="export">
@@ -94,6 +123,7 @@
       <span class="nav-text">Configurações</span>
     </div>
   </div>
+  
   <div class="sidebar-footer">
     <div class="user-card" id="logoutBtn">
       <div class="avatar" id="avatarDesktop">U</div>
@@ -105,131 +135,184 @@
   </div>
 </nav>
 
+<!-- ============================================ -->
 <!-- MOBILE USER BAR -->
-<div id="mobileUserBar" style="display:none;position:fixed;bottom:62px;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:12px 20px;z-index:39;align-items:center;justify-content:space-between;box-shadow:0 -4px 20px rgba(0,0,0,0.1)">
-  <div style="display:flex;align-items:center;gap:12px">
-    <div class="avatar" id="mobileAvatar" style="width:36px;height:36px;font-size:14px">U</div>
+<!-- ============================================ -->
+<div id="mobileUserBar" style="display:none">
+  <div style="display:flex; align-items:center; gap:12px">
+    <div class="avatar" id="mobileAvatar" style="width:40px;height:40px;font-size:14px">U</div>
     <div>
       <div class="user-name" id="mobileUserName" style="font-size:14px;font-weight:600"></div>
-      <div class="user-plan" id="mobileUserEmail" style="font-size:11px;color:var(--muted)"></div>
+      <div class="user-plan" id="mobileUserEmail" style="font-size:11px;color:var(--text-tertiary)"></div>
     </div>
   </div>
-  <button class="btn btn-ghost" id="mobileLogoutBtn" style="font-size:12px;padding:8px 14px">Sair</button>
+  <button class="btn btn-ghost btn-sm" id="mobileLogoutBtn">Sair</button>
 </div>
 
+<!-- ============================================ -->
 <!-- BOTTOM NAV (MOBILE) -->
+<!-- ============================================ -->
 <nav class="bottom-nav" id="bottomNav" style="display:none">
-  <div class="bn-item" data-page="dashboard"><div class="bn-dot"></div><div class="bn-icon">📊</div><div class="bn-label">Home</div></div>
-  <div class="bn-item" data-page="accounts"><div class="bn-dot"></div><div class="bn-icon">🏦</div><div class="bn-label">Contas</div></div>
-  <div class="bn-item" data-page="transactions"><div class="bn-dot"></div><div class="bn-icon">💳</div><div class="bn-label">Transações</div></div>
-  <div class="bn-item" data-page="reports"><div class="bn-dot"></div><div class="bn-icon">📈</div><div class="bn-label">Relatórios</div></div>
-  <div class="bn-item" data-page="config"><div class="bn-dot"></div><div class="bn-icon">⚙️</div><div class="bn-label">Config</div></div>
+  <div class="bn-item" data-page="dashboard">
+    <div class="bn-icon">📊</div>
+    <div class="bn-label">Home</div>
+    <div class="bn-dot"></div>
+  </div>
+  <div class="bn-item" data-page="accounts">
+    <div class="bn-icon">🏦</div>
+    <div class="bn-label">Contas</div>
+    <div class="bn-dot"></div>
+  </div>
+  <div class="bn-item" data-page="transactions">
+    <div class="bn-icon">💳</div>
+    <div class="bn-label">Transações</div>
+    <div class="bn-dot"></div>
+  </div>
+  <div class="bn-item" data-page="reports">
+    <div class="bn-icon">📈</div>
+    <div class="bn-label">Relatórios</div>
+    <div class="bn-dot"></div>
+  </div>
+  <div class="bn-item" data-page="config">
+    <div class="bn-icon">⚙️</div>
+    <div class="bn-label">Config</div>
+    <div class="bn-dot"></div>
+  </div>
 </nav>
 
+<!-- ============================================ -->
 <!-- MAIN CONTENT -->
+<!-- ============================================ -->
 <main class="main" id="mainContent" style="display:none">
   
-  <!-- ============================================ -->
-  <!-- DASHBOARD PAGE (COM NOVOS GRÁFICOS) -->
-  <!-- ============================================ -->
+  <!-- DASHBOARD PAGE -->
   <div class="page active" id="page-dashboard">
     <div class="page-header">
       <div>
         <div class="page-title">Dashboard</div>
         <div class="page-sub">Visão geral das suas finanças</div>
       </div>
-      <button class="btn btn-primary" onclick="Transactions.openModal()">+ Nova transação</button>
+      <button class="btn btn-primary" onclick="window.Transactions?.openModal()">
+        + Nova transação
+      </button>
     </div>
     
     <!-- Cards Principais -->
     <div class="cards-grid">
-      <div class="card"><div class="card-label">SALDO TOTAL</div><div class="card-value green" id="totalBalance">R$ 0,00</div><div class="card-bg-icon">💰</div></div>
-      <div class="card"><div class="card-label">RECEITAS (MÊS)</div><div class="card-value green" id="monthlyIncome">R$ 0,00</div><div class="card-bg-icon">📈</div></div>
-      <div class="card"><div class="card-label">DESPESAS (MÊS)</div><div class="card-value red" id="monthlyExpense">R$ 0,00</div><div class="card-bg-icon">📉</div></div>
-      <div class="card"><div class="card-label">ECONOMIA</div><div class="card-value yellow" id="savingsRate">0%</div><div class="card-bg-icon">🎯</div></div>
+      <div class="card card-primary">
+        <div class="card-label">💰 SALDO TOTAL</div>
+        <div class="card-value success" id="totalBalance">R$ 0,00</div>
+        <div class="card-bg-icon">💰</div>
+      </div>
+      <div class="card">
+        <div class="card-label">📈 RECEITAS (MÊS)</div>
+        <div class="card-value success" id="monthlyIncome">R$ 0,00</div>
+        <div class="card-bg-icon">📈</div>
+      </div>
+      <div class="card">
+        <div class="card-label">📉 DESPESAS (MÊS)</div>
+        <div class="card-value danger" id="monthlyExpense">R$ 0,00</div>
+        <div class="card-bg-icon">📉</div>
+      </div>
+      <div class="card">
+        <div class="card-label">🎯 ECONOMIA</div>
+        <div class="card-value warning" id="savingsRate">0%</div>
+        <div class="card-bg-icon">🎯</div>
+      </div>
     </div>
     
-    <!-- Cards de Indicadores Avançados -->
-    <div class="cards-grid" style="grid-template-columns: repeat(4,1fr); margin-top: -5px;">
-      <div class="card"><div class="card-label">🏦 TOTAL EM BANCOS</div><div class="card-value green" id="totalBankBalance">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">👛 TOTAL EM CARTEIRA</div><div class="card-value green" id="totalWalletBalance">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">🏆 METAS ATIVAS</div><div class="card-value yellow" id="activeGoals">0</div></div>
-      <div class="card"><div class="card-label">📅 CONTAS A VENCER</div><div class="card-value red" id="pendingBillsCount">0</div></div>
+    <!-- Indicadores Avançados -->
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-label">🏦 TOTAL EM BANCOS</div>
+        <div class="card-value success" id="totalBankBalance">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <div class="card-label">👛 TOTAL EM CARTEIRA</div>
+        <div class="card-value success" id="totalWalletBalance">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <div class="card-label">🏆 METAS ATIVAS</div>
+        <div class="card-value warning" id="activeGoals">0</div>
+      </div>
+      <div class="card">
+        <div class="card-label">📅 CONTAS A VENCER</div>
+        <div class="card-value danger" id="pendingBillsCount">0</div>
+      </div>
     </div>
     
-    <!-- Card Resumo das Contas -->
-    <div class="chart-card" id="accountsSummaryCard" style="cursor: pointer;" onclick="if(window.Dashboard) Dashboard.showAccountDetails()">
+    <!-- Resumo das Contas -->
+    <div class="chart-card" id="accountsSummaryCard" style="cursor: pointer;">
       <div class="chart-header">
         <div class="chart-title">🏦 Resumo das Suas Contas</div>
-        <button class="btn btn-ghost" onclick="event.stopPropagation(); if(window.Dashboard) Dashboard.showAccountDetails()">Ver Detalhes →</button>
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); window.Dashboard?.showAccountDetails()">Ver Detalhes →</button>
       </div>
-      <div id="accountsSummaryContent" style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 16px;">
-        <div style="text-align:center;padding:20px;color:var(--muted);width:100%;">Carregando contas...</div>
-      </div>
-    </div>
-    
-    <!-- Gráficos Originais -->
-    <div class="charts-row" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-      <div class="chart-card">
-        <div class="chart-header"><div class="chart-title">📊 Gastos por Categoria</div></div>
-        <canvas id="expenseChart" style="max-height:200px; width:100%"></canvas>
-      </div>
-      <div class="chart-card">
-        <div class="chart-header"><div class="chart-title">🏦 Distribuição por Banco</div></div>
-        <canvas id="bankDistributionChart" style="max-height:200px; width:100%"></canvas>
+      <div id="accountsSummaryContent" class="text-center" style="padding: var(--space-5); color: var(--text-tertiary);">
+        Carregando contas...
       </div>
     </div>
     
-    <!-- Gráfico de Evolução Patrimonial -->
-    <div class="chart-card">
-      <div class="chart-header"><div class="chart-title">📈 Evolução Patrimonial (6 meses)</div></div>
-      <canvas id="evolutionChart" style="max-height:200px; width:100%"></canvas>
-    </div>
-    
-    <!-- ============================================ -->
-    <!-- NOVOS GRÁFICOS AVANÇADOS -->
-    <!-- ============================================ -->
-    <div class="charts-row" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-      
-      <!-- Gráfico 1: Previsão de Gastos -->
+    <!-- Gráficos -->
+    <div class="charts-row">
       <div class="chart-card">
         <div class="chart-header">
-          <div class="chart-title">📈 Previsão de Gastos (Próximos 30 dias)</div>
-          <span class="badge" style="background:var(--yellow2); color:var(--yellow); padding:2px 8px; border-radius:12px; font-size:10px;">Baseado no histórico</span>
+          <div class="chart-title">📊 Gastos por Categoria</div>
         </div>
-        <canvas id="forecastChart" style="max-height:200px; width:100%"></canvas>
-        <div id="forecastInsight" style="font-size:11px; color:var(--muted); margin-top:10px; text-align:center;"></div>
+        <canvas id="expenseChart" style="max-height: 220px; width: 100%;"></canvas>
       </div>
-      
-      <!-- Gráfico 2: Comparação Mês a Mês -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">🏦 Distribuição por Banco</div>
+        </div>
+        <canvas id="bankDistributionChart" style="max-height: 220px; width: 100%;"></canvas>
+      </div>
+    </div>
+    
+    <!-- Evolução Patrimonial -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">📈 Evolução Patrimonial (6 meses)</div>
+      </div>
+      <canvas id="evolutionChart" style="max-height: 200px; width: 100%;"></canvas>
+    </div>
+    
+    <!-- Gráficos Avançados -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">📈 Previsão de Gastos</div>
+          <span style="background: var(--warning-bg); color: var(--warning); padding: 2px 8px; border-radius: var(--radius-sm); font-size: var(--text-xs);">30 dias</span>
+        </div>
+        <canvas id="forecastChart" style="max-height: 200px; width: 100%;"></canvas>
+      </div>
       <div class="chart-card">
         <div class="chart-header">
           <div class="chart-title">📊 Comparação Mês a Mês</div>
-          <select id="comparisonYear" class="filter-select" style="padding:4px 8px; font-size:12px;" onchange="Charts.renderComparisonChart()">
+          <select id="comparisonYear" class="form-select" style="width: auto; padding: var(--space-2) var(--space-3);" onchange="window.Charts?.renderComparisonChart()">
             <option value="2023">2023</option>
             <option value="2024">2024</option>
             <option value="2025">2025</option>
             <option value="2026" selected>2026</option>
           </select>
         </div>
-        <canvas id="comparisonChart" style="max-height:200px; width:100%"></canvas>
+        <canvas id="comparisonChart" style="max-height: 200px; width: 100%;"></canvas>
       </div>
     </div>
     
-    <!-- Gráfico 3: Metas vs Realizado -->
+    <!-- Metas vs Realizado -->
     <div class="chart-card">
       <div class="chart-header">
         <div class="chart-title">🎯 Metas vs Realizado</div>
-        <button class="btn btn-ghost" onclick="Charts.renderGoalsVsActual()" style="padding:4px 12px; font-size:12px;">⟳ Atualizar</button>
+        <button class="btn btn-ghost btn-sm" onclick="window.Charts?.renderGoalsVsActual()">⟳ Atualizar</button>
       </div>
-      <canvas id="goalsVsActualChart" style="max-height:250px; width:100%"></canvas>
+      <canvas id="goalsVsActualChart" style="max-height: 250px; width: 100%;"></canvas>
     </div>
     
     <!-- Metas -->
     <div class="chart-card" id="goalsContainer">
       <div class="chart-header">
         <div class="chart-title">🎯 Minhas Metas</div>
-        <button class="btn btn-ghost" id="newGoalBtn">+ Nova Meta</button>
+        <button class="btn btn-primary btn-sm" id="newGoalBtn">+ Nova Meta</button>
       </div>
       <div id="goalsList"></div>
     </div>
@@ -238,37 +321,35 @@
     <div class="chart-card">
       <div class="chart-header">
         <div class="chart-title">📋 Últimas Transações</div>
-        <button class="btn btn-ghost" id="viewAllBtn">Ver todas →</button>
+        <button class="btn btn-ghost btn-sm" id="viewAllBtn">Ver todas →</button>
       </div>
       <div id="recentTransactions" class="tx-list"></div>
     </div>
   </div>
 
-  <!-- ============================================ -->
   <!-- TRANSACTIONS PAGE -->
-  <!-- ============================================ -->
   <div class="page" id="page-transactions">
     <div class="page-header">
       <div>
         <div class="page-title">Transações</div>
         <div class="page-sub">Gerencie todas suas movimentações</div>
       </div>
-      <button class="btn btn-primary" onclick="Transactions.openModal()">+ Nova transação</button>
+      <button class="btn btn-primary" onclick="window.Transactions?.openModal()">+ Nova transação</button>
     </div>
     
-    <div class="table-card">
-      <div class="table-toolbar">
-        <div class="search-wrap">
+    <div class="table-wrapper">
+      <div class="table-toolbar" style="display: flex; justify-content: space-between; padding: var(--space-4); border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: var(--space-3);">
+        <div class="search-wrap" style="display: flex; align-items: center; gap: var(--space-2); background: var(--bg-elevated); border-radius: var(--radius-md); padding: var(--space-2) var(--space-3); flex: 1; min-width: 200px;">
           <span>🔍</span>
-          <input type="text" placeholder="Buscar transação..." id="searchInput" onkeyup="Transactions.filter()">
+          <input type="text" placeholder="Buscar transação..." id="searchInput" style="background: none; border: none; color: var(--text-primary); width: 100%; outline: none;">
         </div>
-        <div class="filter-row">
-          <select class="filter-select" id="typeFilter" onchange="Transactions.filter()">
+        <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+          <select class="form-select" id="typeFilter" style="width: auto;">
             <option value="all">Todos os tipos</option>
             <option value="income">💰 Receitas</option>
             <option value="expense">💸 Despesas</option>
           </select>
-          <select class="filter-select" id="categoryFilter" onchange="Transactions.filter()">
+          <select class="form-select" id="categoryFilter" style="width: auto;">
             <option value="all">Todas categorias</option>
             <option value="Alimentação">🍔 Alimentação</option>
             <option value="Transporte">🚗 Transporte</option>
@@ -280,22 +361,22 @@
           </select>
         </div>
       </div>
-      <div class="table-scroll">
-        <table style="width:100%; border-collapse:collapse;">
+      <div style="overflow-x: auto;">
+        <table class="data-table">
           <thead>
-            <tr style="background:var(--bg3); border-bottom:2px solid var(--border);">
-              <th style="padding:14px 12px; text-align:left;">Descrição</th>
-              <th style="padding:14px 12px; text-align:left;">Tipo</th>
-              <th style="padding:14px 12px; text-align:left;">Categoria</th>
-              <th style="padding:14px 12px; text-align:left;">Data</th>
-              <th style="padding:14px 12px; text-align:left;">Valor</th>
-              <th style="padding:14px 12px; text-align:center;">Ações</th>
+            <tr>
+              <th>Descrição</th>
+              <th>Tipo</th>
+              <th>Categoria</th>
+              <th>Data</th>
+              <th>Valor</th>
+              <th style="text-align: center;">Ações</th>
             </tr>
           </thead>
           <tbody id="transactionsList">
             <tr>
-              <td colspan="6" style="text-align:center;padding:60px;color:var(--muted)">
-                <div style="font-size:48px;margin-bottom:16px">💳</div>
+              <td colspan="6" style="text-align: center; padding: var(--space-16); color: var(--text-tertiary);">
+                <div style="font-size: 48px; margin-bottom: var(--space-4);">💳</div>
                 <div>Carregando transações...</div>
               </td>
             </tr>
@@ -305,56 +386,71 @@
     </div>
   </div>
 
-  <!-- CONTAS BANCÁRIAS PAGE -->
+  <!-- ACCOUNTS PAGE -->
   <div class="page" id="page-accounts">
     <div class="page-header">
       <div>
         <div class="page-title">Contas Bancárias</div>
         <div class="page-sub">Gerencie suas contas e saldos</div>
       </div>
-      <button class="btn btn-primary" onclick="Accounts.openModal()">+ Nova Conta</button>
+      <button class="btn btn-primary" onclick="window.Accounts?.openModal()">+ Nova Conta</button>
     </div>
     
-    <div class="cards-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:20px;">
-      <div class="card"><div class="card-label">💰 TOTAL EM CONTAS</div><div class="card-value green" id="totalAccountsBalance">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">🏦 NÚMERO DE CONTAS</div><div class="card-value" id="accountsCount">0</div></div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-label">💰 TOTAL EM CONTAS</div>
+        <div class="card-value success" id="totalAccountsBalance">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <div class="card-label">🏦 NÚMERO DE CONTAS</div>
+        <div class="card-value" id="accountsCount">0</div>
+      </div>
     </div>
     
-    <div id="accountsList" class="accounts-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px,1fr)); gap:16px;"></div>
+    <div id="accountsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--space-4);"></div>
   </div>
 
-  <!-- CONTAS A PAGAR PAGE -->
+  <!-- BILLS PAGE -->
   <div class="page" id="page-bills">
     <div class="page-header">
       <div>
         <div class="page-title">Contas a Pagar</div>
         <div class="page-sub">Gerencie suas obrigações financeiras</div>
       </div>
-      <button class="btn btn-primary" onclick="Bills.openModal()">+ Nova Conta</button>
+      <button class="btn btn-primary" onclick="window.Bills?.openModal()">+ Nova Conta</button>
     </div>
     
-    <div class="cards-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:20px;">
-      <div class="card"><div class="card-label">⏳ TOTAL PENDENTE</div><div class="card-value yellow" id="pendingBillsTotal">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">⚠️ CONTAS ATRASADAS</div><div class="card-value red" id="overdueBillsTotal">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">📅 PRÓXIMOS 7 DIAS</div><div class="card-value" id="upcomingBillsCount">0</div></div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-label">⏳ TOTAL PENDENTE</div>
+        <div class="card-value warning" id="pendingBillsTotal">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <div class="card-label">⚠️ CONTAS ATRASADAS</div>
+        <div class="card-value danger" id="overdueBillsTotal">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <div class="card-label">📅 PRÓXIMOS 7 DIAS</div>
+        <div class="card-value" id="upcomingBillsCount">0</div>
+      </div>
     </div>
     
-    <div id="billsList" class="bills-list"></div>
+    <div id="billsList"></div>
   </div>
 
-  <!-- PARCELAMENTOS PAGE -->
+  <!-- INSTALLMENTS PAGE -->
   <div class="page" id="page-installments">
     <div class="page-header">
       <div>
         <div class="page-title">Parcelamentos</div>
         <div class="page-sub">Acompanhe suas compras parceladas</div>
       </div>
-      <button class="btn btn-primary" onclick="Installments.openModal()">+ Novo Parcelamento</button>
+      <button class="btn btn-primary" onclick="window.Installments?.openModal()">+ Novo Parcelamento</button>
     </div>
-    <div id="installmentsList" class="installments-list"></div>
+    <div id="installmentsList"></div>
   </div>
 
-  <!-- RELATÓRIOS PAGE -->
+  <!-- REPORTS PAGE -->
   <div class="page" id="page-reports">
     <div class="page-header">
       <div>
@@ -362,24 +458,52 @@
         <div class="page-sub">Análise detalhada das suas finanças</div>
       </div>
     </div>
-    <div id="reportControls"></div>
-    <div class="cards-grid" style="grid-template-columns:repeat(4,1fr); margin-bottom:20px;">
-      <div class="card"><div class="card-label">💰 RECEITAS</div><div class="card-value green" id="reportIncome">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">💸 DESPESAS</div><div class="card-value red" id="reportExpense">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">⚖️ SALDO</div><div class="card-value" id="reportBalance">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">📊 TOTAL TRANS.</div><div class="card-value" id="reportTransactionCount">0</div></div>
+    
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-label">💰 RECEITAS</div>
+        <div class="card-value success" id="reportIncome">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <div class="card-label">💸 DESPESAS</div>
+        <div class="card-value danger" id="reportExpense">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <div class="card-label">⚖️ SALDO</div>
+        <div class="card-value" id="reportBalance">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <div class="card-label">📊 TOTAL TRANS.</div>
+        <div class="card-value" id="reportTransactionCount">0</div>
+      </div>
     </div>
-    <div class="cards-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:20px;">
-      <div class="card"><div class="card-label">🏆 CATEGORIA MAIS USADA</div><div class="card-value" id="reportTopCategory">-</div></div>
-      <div class="card"><div class="card-label">📈 MAIOR RECEITA</div><div class="card-value green" id="reportMaxIncome">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">📉 MAIOR DESPESA</div><div class="card-value red" id="reportMaxExpense">R$ 0,00</div></div>
+    
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-label">🏆 CATEGORIA MAIS USADA</div>
+        <div class="card-value" id="reportTopCategory">-</div>
+      </div>
+      <div class="card">
+        <div class="card-label">📈 MAIOR RECEITA</div>
+        <div class="card-value success" id="reportMaxIncome">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <div class="card-label">📉 MAIOR DESPESA</div>
+        <div class="card-value danger" id="reportMaxExpense">R$ 0,00</div>
+      </div>
     </div>
+    
     <div class="chart-card">
-      <div class="chart-header"><div class="chart-title">📊 Gastos por Categoria (Período)</div></div>
-      <canvas id="reportCategoryChart" style="max-height:250px; width:100%"></canvas>
+      <div class="chart-header">
+        <div class="chart-title">📊 Gastos por Categoria (Período)</div>
+      </div>
+      <canvas id="reportCategoryChart" style="max-height: 250px; width: 100%;"></canvas>
     </div>
+    
     <div class="chart-card">
-      <div class="chart-header"><div class="chart-title">📋 Transações do Período</div></div>
+      <div class="chart-header">
+        <div class="chart-title">📋 Transações do Período</div>
+      </div>
       <div id="reportTransactions"></div>
     </div>
   </div>
@@ -392,10 +516,22 @@
         <div class="page-sub">Exporte suas transações em diferentes formatos</div>
       </div>
     </div>
-    <div class="export-grid">
-      <div class="export-card" data-format="csv"><div class="export-card-icon">📊</div><div class="export-card-title">CSV</div><div class="export-card-desc">Exportar para Excel</div></div>
-      <div class="export-card" data-format="json"><div class="export-card-icon">📄</div><div class="export-card-title">JSON</div><div class="export-card-desc">Formato estruturado</div></div>
-      <div class="export-card" data-format="pdf"><div class="export-card-icon">📑</div><div class="export-card-title">PDF</div><div class="export-card-desc">Relatório formatado</div></div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
+      <div class="card text-center" data-format="csv" style="cursor: pointer; text-align: center;">
+        <div style="font-size: 48px; margin-bottom: var(--space-3);">📊</div>
+        <div style="font-weight: 700; margin-bottom: var(--space-2);">CSV</div>
+        <div style="font-size: var(--text-xs); color: var(--text-tertiary);">Exportar para Excel</div>
+      </div>
+      <div class="card text-center" data-format="json" style="cursor: pointer; text-align: center;">
+        <div style="font-size: 48px; margin-bottom: var(--space-3);">📄</div>
+        <div style="font-weight: 700; margin-bottom: var(--space-2);">JSON</div>
+        <div style="font-size: var(--text-xs); color: var(--text-tertiary);">Formato estruturado</div>
+      </div>
+      <div class="card text-center" data-format="pdf" style="cursor: pointer; text-align: center;">
+        <div style="font-size: 48px; margin-bottom: var(--space-3);">📑</div>
+        <div style="font-weight: 700; margin-bottom: var(--space-2);">PDF</div>
+        <div style="font-size: var(--text-xs); color: var(--text-tertiary);">Relatório formatado</div>
+      </div>
     </div>
   </div>
 
@@ -407,9 +543,16 @@
         <div class="page-sub">Configure notificações</div>
       </div>
     </div>
-    <div class="config-section">
-      <div class="config-header"><div class="config-header-icon">💰</div><div><div class="config-title">Alerta de Gasto Excessivo</div><div class="config-sub">Notificar quando gastar mais que o limite</div></div></div>
-      <div class="config-body"><div class="alert-item"><div class="alert-info"><span>⚠️</span><div><div class="config-title">Limite mensal</div></div></div><input type="number" id="spendingLimit" placeholder="R$ 0,00" class="form-input" style="width:120px"></div></div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">💰 Alerta de Gasto Excessivo</div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);">
+        <div>
+          <div style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-1);">Notificar quando gastar mais que o limite mensal</div>
+        </div>
+        <input type="number" id="spendingLimit" placeholder="R$ 0,00" class="form-input" style="width: 150px;">
+      </div>
     </div>
   </div>
 
@@ -421,64 +564,169 @@
         <div class="page-sub">Gerencie suas preferências</div>
       </div>
     </div>
-    <div class="config-section">
-      <div class="config-header"><div class="config-header-icon">👤</div><div><div class="config-title">Perfil</div></div></div>
-      <div class="config-body"><div style="display:flex;align-items:center;gap:15px;margin-bottom:15px"><div class="avatar" id="profileAvatar" style="width:48px;height:48px;font-size:18px">U</div><div><div id="profileName" style="font-weight:600"></div><div id="profileEmail" style="font-size:12px;color:var(--muted)"></div></div></div><button class="btn btn-outline" id="configLogoutBtn">Sair da conta</button></div>
+    
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">👤 Perfil</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-5);">
+        <div class="avatar" id="profileAvatar" style="width: 56px; height: 56px; font-size: var(--text-xl);">U</div>
+        <div>
+          <div id="profileName" style="font-weight: 700; margin-bottom: var(--space-1);"></div>
+          <div id="profileEmail" style="font-size: var(--text-sm); color: var(--text-tertiary);"></div>
+        </div>
+      </div>
+      <button class="btn btn-outline" id="configLogoutBtn">Sair da conta</button>
     </div>
-    <div class="config-section"><div class="config-header"><div class="config-header-icon">🎨</div><div><div class="config-title">Tema</div></div></div><div class="config-body"><div style="display:flex;justify-content:space-between"><span>Alternar tema</span><div class="toggle" id="themeToggle"></div></div></div></div>
+    
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">🎨 Aparência</div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <span>Tema escuro</span>
+        <div class="toggle" id="themeToggle" style="cursor: pointer;"></div>
+      </div>
+    </div>
   </div>
 </main>
 
-<!-- MODAIS -->
+<!-- ============================================ -->
+<!-- MODALS -->
+<!-- ============================================ -->
+
+<!-- Transaction Modal -->
 <div class="modal-overlay" id="transactionModal">
   <div class="modal">
     <div class="modal-title" id="modalTitle">Nova Transação</div>
     <div class="modal-sub">Preencha os dados da movimentação</div>
     <div class="modal-grid">
-      <div class="form-group"><label class="form-label">Conta</label><select class="form-select" id="transactionAccount"><option value="">Selecionar conta</option></select></div>
-      <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="transactionType"><option value="income">💰 Receita</option><option value="expense">💸 Despesa</option></select></div>
-      <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="transactionCategory"><option value="Alimentação">🍔 Alimentação</option><option value="Transporte">🚗 Transporte</option><option value="Moradia">🏠 Moradia</option><option value="Salário">💼 Salário</option><option value="Lazer">🎬 Lazer</option><option value="Saúde">🏥 Saúde</option><option value="Outros">📌 Outros</option></select></div>
-      <div class="form-group"><label class="form-label">Descrição</label><input class="form-input" id="transactionDescription" placeholder="Ex: Compras do mês"></div>
-      <div class="form-group"><label class="form-label">Valor (R$)</label><input class="form-input" type="number" id="transactionAmount" step="0.01"></div>
-      <div class="form-group"><label class="form-label">Data</label><input class="form-input" type="date" id="transactionDate"></div>
+      <div class="form-group">
+        <label class="form-label">Conta</label>
+        <select class="form-select" id="transactionAccount">
+          <option value="">Selecionar conta</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo</label>
+        <select class="form-select" id="transactionType">
+          <option value="income">💰 Receita</option>
+          <option value="expense">💸 Despesa</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Categoria</label>
+        <select class="form-select" id="transactionCategory">
+          <option value="Alimentação">🍔 Alimentação</option>
+          <option value="Transporte">🚗 Transporte</option>
+          <option value="Moradia">🏠 Moradia</option>
+          <option value="Salário">💼 Salário</option>
+          <option value="Lazer">🎬 Lazer</option>
+          <option value="Saúde">🏥 Saúde</option>
+          <option value="Outros">📌 Outros</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descrição</label>
+        <input class="form-input" id="transactionDescription" placeholder="Ex: Compras do mês">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Valor (R$)</label>
+        <input class="form-input" type="number" id="transactionAmount" step="0.01" placeholder="0,00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Data</label>
+        <input class="form-input" type="date" id="transactionDate">
+      </div>
     </div>
-    <div class="modal-footer"><button class="btn btn-ghost" id="cancelModalBtn">Cancelar</button><button class="btn btn-primary" id="saveTransactionBtn">Salvar</button></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="cancelModalBtn">Cancelar</button>
+      <button class="btn btn-primary" id="saveTransactionBtn">Salvar</button>
+    </div>
   </div>
 </div>
 
+<!-- Account Modal -->
 <div class="modal-overlay" id="accountModal">
   <div class="modal">
     <div class="modal-title" id="modalAccountTitle">Nova Conta</div>
     <div class="modal-sub">Adicione uma conta bancária</div>
     <input type="hidden" id="accountId">
     <div class="modal-grid">
-      <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="accountName" placeholder="Ex: Nubank"></div>
-      <div class="form-group"><label class="form-label">Banco</label><input class="form-input" id="accountBank" placeholder="Nome do banco"></div>
-      <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="accountType"><option value="corrente">💳 Conta Corrente</option><option value="poupanca">🏦 Poupança</option><option value="carteira">👛 Carteira</option><option value="dinheiro">💵 Dinheiro</option><option value="investimento">📈 Investimento</option><option value="cartao">💳 Cartão</option></select></div>
-      <div class="form-group"><label class="form-label">Ícone</label><input class="form-input" id="accountIcon" placeholder="🏦" maxlength="2"></div>
-      <div class="form-group"><label class="form-label">Cor</label><input class="form-input" type="color" id="accountColor" value="#00e5a0"></div>
-      <div class="form-group"><label class="form-label">Saldo Inicial</label><input class="form-input" type="number" id="accountBalance" step="0.01"></div>
+      <div class="form-group">
+        <label class="form-label">Nome</label>
+        <input class="form-input" id="accountName" placeholder="Ex: Nubank">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Banco</label>
+        <input class="form-input" id="accountBank" placeholder="Nome do banco">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo</label>
+        <select class="form-select" id="accountType">
+          <option value="corrente">💳 Conta Corrente</option>
+          <option value="poupanca">🏦 Poupança</option>
+          <option value="carteira">👛 Carteira</option>
+          <option value="dinheiro">💵 Dinheiro</option>
+          <option value="investimento">📈 Investimento</option>
+          <option value="cartao">💳 Cartão</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ícone</label>
+        <input class="form-input" id="accountIcon" placeholder="🏦" maxlength="2">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Cor</label>
+        <input class="form-input" type="color" id="accountColor" value="#00e5a0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Saldo Inicial</label>
+        <input class="form-input" type="number" id="accountBalance" step="0.01" placeholder="0,00">
+      </div>
     </div>
-    <div class="modal-footer"><button class="btn btn-ghost" onclick="Accounts.closeModal()">Cancelar</button><button class="btn btn-primary" onclick="Accounts.save()">Salvar</button></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="window.Accounts?.closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="window.Accounts?.save()">Salvar</button>
+    </div>
   </div>
 </div>
 
+<!-- Goal Modal -->
 <div class="modal-overlay" id="goalModal">
   <div class="modal">
     <div class="modal-title">Nova Meta</div>
     <div class="modal-sub">Defina um objetivo de economia</div>
     <div class="modal-grid">
-      <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="goalName" placeholder="Ex: Viagem"></div>
-      <div class="form-group"><label class="form-label">Valor Alvo</label><input class="form-input" type="number" id="goalTarget"></div>
-      <div class="form-group"><label class="form-label">Valor Atual</label><input class="form-input" type="number" id="goalCurrent" value="0"></div>
-      <div class="form-group"><label class="form-label">Data Limite</label><input class="form-input" type="date" id="goalDeadline"></div>
-      <div class="form-group"><label class="form-label">Conta</label><select class="form-select" id="goalAccount"></select></div>
+      <div class="form-group">
+        <label class="form-label">Nome</label>
+        <input class="form-input" id="goalName" placeholder="Ex: Viagem">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Valor Alvo</label>
+        <input class="form-input" type="number" id="goalTarget" placeholder="0,00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Valor Atual</label>
+        <input class="form-input" type="number" id="goalCurrent" value="0" placeholder="0,00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Data Limite</label>
+        <input class="form-input" type="date" id="goalDeadline">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Conta</label>
+        <select class="form-select" id="goalAccount"></select>
+      </div>
     </div>
-    <div class="modal-footer"><button class="btn btn-ghost" id="cancelGoalBtn">Cancelar</button><button class="btn btn-primary" id="saveGoalBtn">Salvar</button></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="cancelGoalBtn">Cancelar</button>
+      <button class="btn btn-primary" id="saveGoalBtn">Salvar</button>
+    </div>
   </div>
 </div>
 
-<!-- SCRIPTS -->
+<!-- Scripts -->
 <script src="js/config.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
@@ -495,5 +743,23 @@
 <script src="js/ui.js"></script>
 <script src="js/events.js"></script>
 <script src="js/app.js"></script>
+
+<script>
+  // Sidebar Toggle functionality
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+    });
+    
+    // Restore state
+    if (localStorage.getItem('sidebarCollapsed') === 'true') {
+      sidebar.classList.add('collapsed');
+    }
+  }
+</script>
 </body>
 </html>
