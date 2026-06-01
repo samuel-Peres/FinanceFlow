@@ -1240,26 +1240,16 @@ body {
   display: block;
 }
 
-/* Mobile User Bar */
+/* Mobile User Bar - COMPLETAMENTE OCULTA */
 #mobileUserBar {
-  display: none;
-  position: fixed;
-  bottom: var(--bnav-height);
-  left: 0;
-  right: 0;
-  background: rgba(18, 18, 24, 0.95);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  padding: var(--space-3) var(--space-4);
-  z-index: calc(var(--z-sticky) - 1);
-  align-items: center;
-  justify-content: space-between;
-}
-
-@media (max-width: 768px) {
-  #mobileUserBar {
-    display: flex !important;
-  }
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  pointer-events: none !important;
 }
 
 /* --------------------------------------------
@@ -1331,4 +1321,21 @@ body {
   position: absolute !important;
   top: -9999px !important;
   left: -9999px !important;
+}
+
+/* ============================================
+   REMOVER QUALQUER ELEMENTO FLUTUANTE NÃO IDENTIFICADO
+   ============================================ */
+/* Isso garante que apenas o bottom-nav correto apareça no mobile */
+@media (max-width: 768px) {
+  /* Esconde qualquer elemento que esteja fixed ou absolute e não seja o bottom-nav */
+  body > div:not(.bottom-nav):not(.login-page):not(.sidebar):not(.main):not(.modal-overlay) {
+    display: none !important;
+  }
+  
+  /* Garante que o bottom-nav seja o único elemento na parte inferior */
+  .bottom-nav {
+    display: flex !important;
+    z-index: 100 !important;
+  }
 }
