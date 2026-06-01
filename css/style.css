@@ -1,5 +1,5 @@
 /* ============================================
-   FINANCEFLOW 2.0 - DESIGN SYSTEM PREMIUM
+   FINANCEFLOW 2.1 - DESIGN SYSTEM PREMIUM
    ============================================ */
 
 /* --------------------------------------------
@@ -487,7 +487,6 @@ body {
   box-shadow: var(--shadow-lg);
 }
 
-/* Card Variants */
 .card-primary {
   border-left: 3px solid var(--success);
   background: linear-gradient(135deg, var(--bg-surface), var(--bg-elevated));
@@ -1172,7 +1171,11 @@ body {
   }
 }
 
-/* Bottom Navigation Mobile */
+/* --------------------------------------------
+   BOTTOM NAVIGATION MOBILE
+   Só aparece em dispositivos com tela de toque E largura <= 768px
+   (Garante que NUNCA apareça no PC com mouse, mesmo em janela pequena)
+   -------------------------------------------- */
 .bottom-nav {
   display: none;
   position: fixed;
@@ -1190,7 +1193,7 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-@media (max-width: 768px) {
+@media (pointer: coarse) and (max-width: 768px) {
   .bottom-nav {
     display: flex;
   }
@@ -1240,7 +1243,10 @@ body {
   display: block;
 }
 
-/* Mobile User Bar - COMPLETAMENTE OCULTA */
+/* --------------------------------------------
+   MOBILE USER BAR - COMPLETAMENTE OCULTA
+   (Mantida no DOM para não quebrar scripts)
+   -------------------------------------------- */
 #mobileUserBar {
   display: none !important;
   visibility: hidden !important;
@@ -1302,40 +1308,4 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
-}
-
-/* ============================================
-   ESCONDER MOBILE USER BAR - MAS MANTER NO DOM
-   ============================================ */
-#mobileUserBar {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  max-height: 0 !important;
-  overflow: hidden !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  pointer-events: none !important;
-  opacity: 0 !important;
-  position: absolute !important;
-  top: -9999px !important;
-  left: -9999px !important;
-}
-
-/* ============================================
-   REMOVER QUALQUER ELEMENTO FLUTUANTE NÃO IDENTIFICADO
-   ============================================ */
-/* Isso garante que apenas o bottom-nav correto apareça no mobile */
-@media (max-width: 768px) {
-  /* Esconde qualquer elemento que esteja fixed ou absolute e não seja o bottom-nav */
-  body > div:not(.bottom-nav):not(.login-page):not(.sidebar):not(.main):not(.modal-overlay) {
-    display: none !important;
-  }
-  
-  /* Garante que o bottom-nav seja o único elemento na parte inferior */
-  .bottom-nav {
-    display: flex !important;
-    z-index: 100 !important;
-  }
 }
