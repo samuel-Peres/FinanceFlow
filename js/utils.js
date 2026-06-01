@@ -1,14 +1,23 @@
 // ============================================
-// UTILITÁRIOS
+// UTILITÁRIOS - VERSÃO PREMIUM
 // ============================================
 const Utils = {
   formatMoney(value) {
-    return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (isNaN(value)) value = 0;
+    return value.toLocaleString('pt-BR', { 
+      minimumFractionDigits: 2, 
+      maximumFractionDigits: 2 
+    });
   },
   
   escapeHtml(str) {
     if (!str) return '';
-    return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]);
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   },
   
   showToast(message, isError = false) {
@@ -18,10 +27,11 @@ const Utils = {
       toast.className = 'toast';
       document.body.appendChild(toast);
     }
+    
     toast.textContent = message;
-    toast.style.color = isError ? 'var(--red)' : 'var(--green)';
-    toast.style.borderColor = isError ? 'var(--red)' : 'var(--green)';
+    toast.className = `toast ${isError ? 'toast-error' : 'toast-success'}`;
     toast.classList.add('show');
+    
     setTimeout(() => toast.classList.remove('show'), 3000);
   },
   
@@ -31,5 +41,40 @@ const Utils = {
   
   saveGoals() {
     localStorage.setItem('finance_goals', JSON.stringify(AppState.goals));
+  },
+  
+  // Helper para criar data-label em tabelas responsivas
+  renderTableCell(content, label, className = '') {
+    return `<td data-label="${label}" class="${className}">${content}</td>`;
+  },
+  
+  // Loading state para botões
+  async withLoading(button, callback) {
+    if (!button) return await callback();
+    
+    const originalText = button.innerHTML;
+    button.classList.add('btn-loading');
+    button.disabled = true;
+    
+    try {
+      return await callback();
+    } finally {
+      button.classList.remove('btn-loading');
+      button.disabled = false;
+      button.innerHTML = originalText;
+    }
+  },
+  
+  // Formata data para exibição
+  formatDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
+  },
+  
+  // Calcula diferença entre datas
+  daysDiff(date1, date2) {
+    const diffTime = Math.abs(new Date(date2) - new Date(date1));
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }
 };

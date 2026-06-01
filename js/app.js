@@ -1,8 +1,8 @@
 // ============================================
-// INICIALIZAÇÃO DO APP
+// INICIALIZAÇÃO DO APP - VERSÃO PREMIUM
 // ============================================
 async function init() {
-  console.log('🚀 Iniciando FinanceFlow...');
+  console.log('🚀 Iniciando FinanceFlow Premium...');
   
   try {
     await Auth.init();
@@ -10,6 +10,7 @@ async function init() {
     
     UI.initTheme();
     UI.initNavigation();
+    UI.initModals(); // NOVO: inicializa modais
     ExportModule.init();
     Events.init();
     Alerts.init();
@@ -51,6 +52,12 @@ async function init() {
   window.Reports = Reports;
   window.Charts = Charts;
   window.Dashboard = Dashboard;
+  window.UI = UI;
 }
 
-init();
+// Iniciar quando o DOM estiver pronto
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}

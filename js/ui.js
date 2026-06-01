@@ -1,5 +1,5 @@
 // ============================================
-// INTERFACE DO USUÁRIO (Tema, Navegação) - CORRIGIDO
+// INTERFACE DO USUÁRIO - VERSÃO PREMIUM
 // ============================================
 const UI = {
   initTheme() {
@@ -8,35 +8,54 @@ const UI = {
     const toggle = document.getElementById('themeToggle');
     
     if (savedTheme === 'light') {
-      root.style.setProperty('--bg', '#ffffff');
-      root.style.setProperty('--bg2', '#f5f5f5');
-      root.style.setProperty('--bg3', '#e8e8e8');
-      root.style.setProperty('--text', '#1a1a1a');
-      root.style.setProperty('--muted', '#666666');
+      this.setLightTheme(root);
       if (toggle) toggle.classList.add('on');
+    } else {
+      this.setDarkTheme(root);
+      if (toggle && savedTheme !== 'light') toggle.classList.remove('on');
     }
     
     toggle?.addEventListener('click', () => {
-      const isDark = root.style.getPropertyValue('--bg') === '#0a0a0f' || root.style.getPropertyValue('--bg') === '';
+      const isDark = root.style.getPropertyValue('--bg') === '#0a0a0f' || 
+                     (!root.style.getPropertyValue('--bg') && localStorage.getItem('theme') !== 'light');
+      
       if (isDark) {
-        root.style.setProperty('--bg', '#ffffff');
-        root.style.setProperty('--bg2', '#f5f5f5');
-        root.style.setProperty('--bg3', '#e8e8e8');
-        root.style.setProperty('--text', '#1a1a1a');
-        root.style.setProperty('--muted', '#666666');
+        this.setLightTheme(root);
         localStorage.setItem('theme', 'light');
         toggle.classList.add('on');
       } else {
-        root.style.setProperty('--bg', '#0a0a0f');
-        root.style.setProperty('--bg2', '#111118');
-        root.style.setProperty('--bg3', '#18181f');
-        root.style.setProperty('--text', '#f0f0f5');
-        root.style.setProperty('--muted', '#6b6b80');
+        this.setDarkTheme(root);
         localStorage.setItem('theme', 'dark');
         toggle.classList.remove('on');
       }
-      if (window.Charts) Charts.render();
+      
+      // Recarregar gráficos para ajustar cores
+      setTimeout(() => {
+        if (window.Charts) Charts.render();
+      }, 100);
     });
+  },
+  
+  setLightTheme(root) {
+    root.style.setProperty('--bg', '#f8f9fa');
+    root.style.setProperty('--bg-surface', '#ffffff');
+    root.style.setProperty('--bg-elevated', '#f1f3f5');
+    root.style.setProperty('--text-primary', '#212529');
+    root.style.setProperty('--text-secondary', '#6c757d');
+    root.style.setProperty('--text-tertiary', '#adb5bd');
+    root.style.setProperty('--border', 'rgba(0, 0, 0, 0.08)');
+    root.style.setProperty('--border-hover', 'rgba(0, 0, 0, 0.12)');
+  },
+  
+  setDarkTheme(root) {
+    root.style.setProperty('--bg', '#0a0a0f');
+    root.style.setProperty('--bg-surface', '#121218');
+    root.style.setProperty('--bg-elevated', '#1a1a24');
+    root.style.setProperty('--text-primary', '#ffffff');
+    root.style.setProperty('--text-secondary', '#a1a1b0');
+    root.style.setProperty('--text-tertiary', '#6b6b7f');
+    root.style.setProperty('--border', 'rgba(255, 255, 255, 0.06)');
+    root.style.setProperty('--border-hover', 'rgba(255, 255, 255, 0.12)');
   },
   
   initNavigation() {
@@ -61,22 +80,35 @@ const UI = {
       viewAllBtn.addEventListener('click', this.handleViewAll);
     }
     
-    const newTransactionBtn = document.getElementById('newTransactionBtn');
-    if (newTransactionBtn) {
-      newTransactionBtn.removeEventListener('click', this.handleNewTransaction);
-      newTransactionBtn.addEventListener('click', this.handleNewTransaction);
-    }
-    
-    const newTransactionBtn2 = document.getElementById('newTransactionBtn2');
-    if (newTransactionBtn2) {
-      newTransactionBtn2.removeEventListener('click', this.handleNewTransaction);
-      newTransactionBtn2.addEventListener('click', this.handleNewTransaction);
-    }
-    
     const newGoalBtn = document.getElementById('newGoalBtn');
     if (newGoalBtn) {
       newGoalBtn.removeEventListener('click', this.handleNewGoal);
       newGoalBtn.addEventListener('click', this.handleNewGoal);
+    }
+    
+    // Sidebar toggle
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) {
+      sidebarToggle.removeEventListener('click', this.handleSidebarToggle);
+      sidebarToggle.addEventListener('click', this.handleSidebarToggle);
+    }
+    
+    // Inicializar sidebar state
+    this.initSidebarState();
+  },
+  
+  handleSidebarToggle() {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+      sidebar.classList.toggle('collapsed');
+      localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+    }
+  },
+  
+  initSidebarState() {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar && localStorage.getItem('sidebarCollapsed') === 'true') {
+      sidebar.classList.add('collapsed');
     }
   },
   
@@ -96,10 +128,6 @@ const UI = {
     if (targetItem) targetItem.classList.add('active');
   },
   
-  handleNewTransaction() {
-    if (window.Transactions) Transactions.openModal();
-  },
-  
   handleNewGoal() {
     if (window.Goals) Goals.openModal();
   },
@@ -117,11 +145,15 @@ const UI = {
       targetPage.classList.add('active');
       console.log(`✅ Página ${pageId} ativada`);
       
+      // Recarregar dados específicos da página
       if (pageId === 'transactions' && window.Transactions) {
-        setTimeout(() => {
-          console.log('🔄 Re-renderizando transações...');
-          Transactions.renderTable();
-        }, 100);
+        setTimeout(() => Transactions.renderTable(), 100);
+      }
+      if (pageId === 'accounts' && window.Accounts) {
+        setTimeout(() => Accounts.render(), 100);
+      }
+      if (pageId === 'dashboard' && window.Dashboard) {
+        setTimeout(() => Dashboard.update(), 100);
       }
     } else {
       console.error(`❌ Página ${pageId} não encontrada`);
@@ -133,5 +165,25 @@ const UI = {
       item.classList.remove('active');
     });
     if (activeItem) activeItem.classList.add('active');
+  },
+  
+  initModals() {
+    // Fechar modal ao clicar no overlay
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('open');
+        }
+      });
+    });
+    
+    // Fechar modal com ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(modal => {
+          modal.classList.remove('open');
+        });
+      }
+    });
   }
 };
