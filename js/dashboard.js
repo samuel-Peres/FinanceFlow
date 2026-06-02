@@ -1,5 +1,5 @@
 // ============================================
-// DASHBOARD - VERSÃO PREMIUM
+// DASHBOARD - ESTILO CRM PREMIUM
 // ============================================
 const Dashboard = {
   update() {
@@ -8,6 +8,7 @@ const Dashboard = {
     this.updateIndicators();
     this.updateAccountsSummary();
     this.updateAccountsSummaryCard();
+    this.updateUserAvatar();
     
     if (window.Charts) {
       setTimeout(() => {
@@ -16,6 +17,15 @@ const Dashboard = {
         Charts.renderGoalsVsActual();
       }, 100);
     }
+  },
+  
+  updateUserAvatar() {
+    const nome = AppState.user?.user_metadata?.full_name || AppState.user?.email?.split('@')[0] || 'Usuário';
+    const inicial = nome.charAt(0).toUpperCase();
+    const dashboardAvatar = document.getElementById('dashboardAvatar');
+    const dashboardUserName = document.getElementById('dashboardUserName');
+    if (dashboardAvatar) dashboardAvatar.textContent = inicial;
+    if (dashboardUserName) dashboardUserName.textContent = nome;
   },
   
   updateMainCards() {
@@ -33,30 +43,6 @@ const Dashboard = {
     
     if (totalBalanceEl) totalBalanceEl.innerHTML = `R$ ${Utils.formatMoney(totalBalance)}`;
     if (savingsRateEl) savingsRateEl.innerHTML = `${savingsRate}%`;
-    
-    // Atualizar tendência
-    const trendEl = document.querySelector('.dashboard-card-highlight .dashboard-card-trend');
-    if (trendEl && totalIncome > 0) {
-      const prevMonth = this.getPreviousMonthBalance();
-      const percentChange = prevMonth > 0 ? ((totalBalance - prevMonth) / prevMonth * 100).toFixed(0) : 0;
-      trendEl.innerHTML = percentChange >= 0 ? `▲ +${percentChange}% este mês` : `▼ ${percentChange}% este mês`;
-      trendEl.className = `dashboard-card-trend ${percentChange >= 0 ? 'up' : 'down'}`;
-    }
-  },
-  
-  getPreviousMonthBalance() {
-    const now = new Date();
-    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    let balance = 0;
-    
-    AppState.transactions.forEach(t => {
-      const d = new Date(t.date);
-      if (d.getMonth() === lastMonth.getMonth() && d.getFullYear() === lastMonth.getFullYear()) {
-        if (t.type === 'in') balance += t.amount;
-        else balance -= t.amount;
-      }
-    });
-    return balance;
   },
   
   updateMonthlyCards() {
@@ -100,16 +86,8 @@ const Dashboard = {
     if (activeGoalsEl) activeGoalsEl.innerHTML = AppState.goals?.length || 0;
     
     if (AppState.bills) {
-      const today = new Date();
-      const nextWeek = new Date();
-      nextWeek.setDate(nextWeek.getDate() + 7);
-      
-      const upcomingBills = AppState.bills.filter(b => {
-        const dueDate = new Date(b.due_date);
-        return b.status !== 'paid' && dueDate >= today && dueDate <= nextWeek;
-      }).length;
-      
-      if (pendingBillsCountEl) pendingBillsCountEl.innerHTML = upcomingBills;
+      const pending = AppState.bills.filter(b => b.status === 'pending').length;
+      if (pendingBillsCountEl) pendingBillsCountEl.innerHTML = pending;
     }
   },
   
@@ -136,12 +114,12 @@ const Dashboard = {
     }
     
     container.innerHTML = AppState.accounts.map(acc => `
-      <div class="account-item">
-        <div class="account-icon">${acc.icon || '🏦'}</div>
-        <div class="account-info">
-          <div class="account-name">${Utils.escapeHtml(acc.name)}</div>
-          <div class="account-bank">${acc.bank}</div>
-          <div class="account-balance">R$ ${Utils.formatMoney(acc.balance)}</div>
+      <div class="account-item-modern">
+        <div style="font-size: 28px;">${acc.icon || '🏦'}</div>
+        <div>
+          <div style="font-weight: 600; font-size: var(--text-sm);">${Utils.escapeHtml(acc.name)}</div>
+          <div style="font-size: var(--text-xs); color: var(--text-tertiary);">${acc.bank}</div>
+          <div style="font-family: var(--font-mono); font-weight: 700; font-size: var(--text-sm); color: var(--success);">R$ ${Utils.formatMoney(acc.balance)}</div>
         </div>
       </div>
     `).join('');
