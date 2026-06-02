@@ -1,5 +1,5 @@
 // ============================================
-// INTERFACE DO USUÁRIO - VERSÃO PREMIUM
+// INTERFACE DO USUÁRIO - SEM BOTTOM NAV
 // ============================================
 const UI = {
   initTheme() {
@@ -29,7 +29,6 @@ const UI = {
         toggle.classList.remove('on');
       }
       
-      // Recarregar gráficos para ajustar cores
       setTimeout(() => {
         if (window.Charts) Charts.render();
       }, 100);
@@ -61,19 +60,11 @@ const UI = {
   initNavigation() {
     console.log('🔄 Inicializando navegação...');
     
-    // Sidebar navigation
     document.querySelectorAll('.sidebar .nav-item').forEach(item => {
       item.removeEventListener('click', this.handleNavClick);
       item.addEventListener('click', this.handleNavClick);
     });
     
-    // Bottom nav navigation
-    document.querySelectorAll('.bottom-nav .bn-item').forEach(item => {
-      item.removeEventListener('click', this.handleNavClick);
-      item.addEventListener('click', this.handleNavClick);
-    });
-    
-    // Botões especiais
     const viewAllBtn = document.getElementById('viewAllBtn');
     if (viewAllBtn) {
       viewAllBtn.removeEventListener('click', this.handleViewAll);
@@ -86,14 +77,12 @@ const UI = {
       newGoalBtn.addEventListener('click', this.handleNewGoal);
     }
     
-    // Sidebar toggle
     const sidebarToggle = document.getElementById('sidebarToggle');
     if (sidebarToggle) {
       sidebarToggle.removeEventListener('click', this.handleSidebarToggle);
       sidebarToggle.addEventListener('click', this.handleSidebarToggle);
     }
     
-    // Inicializar sidebar state
     this.initSidebarState();
   },
   
@@ -123,8 +112,8 @@ const UI = {
   
   handleViewAll() {
     UI.showPage('transactions');
-    document.querySelectorAll('.sidebar .nav-item, .bottom-nav .bn-item').forEach(i => i.classList.remove('active'));
-    const targetItem = document.querySelector(`.sidebar .nav-item[data-page="transactions"], .bottom-nav .bn-item[data-page="transactions"]`);
+    document.querySelectorAll('.sidebar .nav-item').forEach(i => i.classList.remove('active'));
+    const targetItem = document.querySelector(`.sidebar .nav-item[data-page="transactions"]`);
     if (targetItem) targetItem.classList.add('active');
   },
   
@@ -145,7 +134,6 @@ const UI = {
       targetPage.classList.add('active');
       console.log(`✅ Página ${pageId} ativada`);
       
-      // Recarregar dados específicos da página
       if (pageId === 'transactions' && window.Transactions) {
         setTimeout(() => Transactions.renderTable(), 100);
       }
@@ -161,14 +149,13 @@ const UI = {
   },
   
   setActive(activeItem) {
-    document.querySelectorAll('.sidebar .nav-item, .bottom-nav .bn-item').forEach(item => {
+    document.querySelectorAll('.sidebar .nav-item').forEach(item => {
       item.classList.remove('active');
     });
     if (activeItem) activeItem.classList.add('active');
   },
   
   initModals() {
-    // Fechar modal ao clicar no overlay
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
@@ -177,7 +164,6 @@ const UI = {
       });
     });
     
-    // Fechar modal com ESC
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         document.querySelectorAll('.modal-overlay.open').forEach(modal => {

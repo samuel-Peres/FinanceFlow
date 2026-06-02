@@ -1,5 +1,5 @@
 // ============================================
-// AUTENTICAÇÃO
+// AUTENTICAÇÃO - CORRIGIDA (SEM BOTTOM NAV)
 // ============================================
 const Auth = {
   async init() {
@@ -36,16 +36,12 @@ const Auth = {
     document.getElementById('loginPage').classList.remove('active');
     document.getElementById('sidebar').style.display = 'flex';
     document.getElementById('mainContent').style.display = 'block';
-    document.getElementById('bottomNav').style.display = 'flex';
-    document.getElementById('mobileUserBar').style.display = 'flex';
   },
   
   showLogin() {
     document.getElementById('loginPage').classList.add('active');
     document.getElementById('sidebar').style.display = 'none';
     document.getElementById('mainContent').style.display = 'none';
-    document.getElementById('bottomNav').style.display = 'none';
-    document.getElementById('mobileUserBar').style.display = 'none';
   },
   
   updateUserUI() {
