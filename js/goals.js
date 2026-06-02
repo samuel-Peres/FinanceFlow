@@ -1,5 +1,5 @@
 // ============================================
-// METAS (ATUALIZADO)
+// METAS - VERSÃO PREMIUM COM ESTILO CRM
 // ============================================
 const Goals = {
   render() {
@@ -8,10 +8,10 @@ const Goals = {
     
     if (AppState.goals.length === 0) {
       container.innerHTML = `
-        <div style="text-align:center;padding:40px;color:var(--muted)">
-          <div style="font-size:48px;margin-bottom:16px">🎯</div>
+        <div style="text-align:center;padding:30px;color:var(--text-tertiary)">
+          <div style="font-size: 32px; margin-bottom: 12px;">🎯</div>
           <div>Nenhuma meta definida</div>
-          <button class="btn btn-primary" style="margin-top:16px" onclick="Goals.openModal()">Criar Primeira Meta</button>
+          <button class="btn btn-primary btn-sm" style="margin-top: 16px;" onclick="Goals.openModal()">Criar Primeira Meta</button>
         </div>
       `;
       return;
@@ -24,28 +24,26 @@ const Goals = {
       const remaining = goal.target - goal.current;
       
       return `
-        <div class="goal-item" style="background:linear-gradient(135deg, var(--bg3), var(--bg2)); border-radius:16px; padding:20px; margin-bottom:16px;">
-          <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+        <div class="tx-item-modern" style="flex-direction: column; align-items: stretch; gap: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
-              <span style="font-weight:700; font-size:16px;">${Utils.escapeHtml(goal.name)}</span>
-              ${goal.account_name ? `<div style="font-size:11px; color:var(--muted); margin-top:4px;">🏦 ${goal.account_name}</div>` : ''}
+              <span style="font-weight: 700;">${Utils.escapeHtml(goal.name)}</span>
+              ${goal.account_name ? `<span style="font-size: 11px; color: var(--text-tertiary); margin-left: 8px;">🏦 ${goal.account_name}</span>` : ''}
             </div>
-            <span style="color:${achieved ? 'var(--green)' : 'var(--yellow)'}; font-weight:600;">
+            <span style="font-family: var(--font-mono); font-weight: 600; font-size: var(--text-sm); color: ${achieved ? 'var(--success)' : 'var(--warning)'}">
               R$ ${Utils.formatMoney(goal.current)} / R$ ${Utils.formatMoney(goal.target)}
             </span>
           </div>
-          <div style="background:var(--bg); border-radius:12px; height:12px; overflow:hidden; margin:12px 0;">
-            <div style="width:${progressPercent}%; height:100%; background:${achieved ? 'var(--green)' : 'linear-gradient(90deg, var(--yellow), var(--green))'}; transition:width .5s ease;"></div>
+          <div style="background: var(--bg); border-radius: 12px; height: 8px; overflow: hidden;">
+            <div style="width: ${progressPercent}%; height: 100%; background: ${achieved ? 'var(--success)' : 'linear-gradient(90deg, var(--warning), var(--success))'}; transition: width .5s ease;"></div>
           </div>
-          <div style="display:flex; justify-content:space-between; margin-top:12px;">
-            <div style="display:flex; gap:16px;">
-              <div><span style="color:var(--muted);">📅 Prazo:</span> ${new Date(goal.deadline).toLocaleDateString('pt-BR')}</div>
-              <div><span style="color:var(--muted);">💰 Faltam:</span> R$ ${Utils.formatMoney(remaining)}</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; gap: 16px;">
+              <span style="font-size: var(--text-xs); color: var(--text-tertiary);">📅 ${new Date(goal.deadline).toLocaleDateString('pt-BR')}</span>
+              <span style="font-size: var(--text-xs); color: var(--text-tertiary);">💰 Faltam: R$ ${Utils.formatMoney(remaining)}</span>
             </div>
-            <div style="display:flex; gap:8px;">
-              ${achieved ? '<span style="color:var(--green);">🎉 Meta alcançada!</span>' : `<span style="color:var(--green);">${progressPercent}% concluído</span>`}
-              <button class="tx-btn tx-btn-del" onclick="Goals.delete('${goal.id}')" style="margin-left:8px;">🗑️</button>
-            </div>
+            ${achieved ? '<span style="color: var(--success); font-size: var(--text-xs);">🎉 Meta alcançada!</span>' : `<span style="color: var(--success); font-size: var(--text-xs);">${progressPercent}% concluído</span>`}
+            <button class="btn-link" style="color: var(--danger);" onclick="Goals.delete('${goal.id}')">Excluir</button>
           </div>
         </div>
       `;

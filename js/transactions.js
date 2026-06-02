@@ -1,5 +1,5 @@
 // ============================================
-// TRANSAÇÕES - VERSÃO PREMIUM
+// TRANSAÇÕES - VERSÃO PREMIUM COM ESTILO CRM
 // ============================================
 const Transactions = {
   async load() {
@@ -100,7 +100,7 @@ const Transactions = {
     if (!recentDiv) return;
     
     if (!AppState.transactions || AppState.transactions.length === 0) {
-      recentDiv.innerHTML = '<div class="text-center" style="padding:30px;color:var(--text-tertiary)">Nenhuma transação ainda</div>';
+      recentDiv.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-tertiary)">Nenhuma transação ainda</div>';
       return;
     }
     
@@ -110,17 +110,19 @@ const Transactions = {
       const account = AppState.accounts?.find(a => a.id === t.account_id);
       
       return `
-        <div class="tx-item" onclick="Transactions.edit('${t.id}')">
-          <div class="tx-icon ${isIncome ? 'bg-success' : 'bg-danger'}">${isIncome ? '💰' : '💸'}</div>
-          <div class="tx-info">
-            <div class="tx-name">${Utils.escapeHtml(t.name)}</div>
-            <div class="tx-meta">
-              ${t.category || 'Sem categoria'}
-              ${account ? ` • ${account.icon || '🏦'} ${account.name}` : ''}
-              • ${Utils.formatDate(t.date)}
+        <div class="tx-item-modern" onclick="Transactions.edit('${t.id}')">
+          <div class="tx-left">
+            <div class="tx-icon-modern ${isIncome ? 'income' : 'expense'}">
+              ${isIncome ? '💰' : '💸'}
+            </div>
+            <div class="tx-info-modern">
+              <span class="tx-name-modern">${Utils.escapeHtml(t.name)}</span>
+              <span class="tx-date-modern">${Utils.formatDate(t.date)}${account ? ` • ${account.name}` : ''}</span>
             </div>
           </div>
-          <div class="tx-amount ${isIncome ? 'income' : 'expense'}">${isIncome ? '+ ' : '- '} R$ ${Utils.formatMoney(t.amount)}</div>
+          <div class="tx-amount-modern ${isIncome ? 'income' : 'expense'}">
+            ${isIncome ? '+' : '-'} R$ ${Utils.formatMoney(t.amount)}
+          </div>
         </div>
       `;
     }).join('');
