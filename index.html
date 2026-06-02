@@ -77,7 +77,6 @@
 <!-- SIDEBAR (DESKTOP E MOBILE) -->
 <!-- ============================================ -->
 <nav class="sidebar" id="sidebar" style="display:none">
-  <!-- Botão Toggle (desktop) -->
   <div class="sidebar-toggle" id="sidebarToggle">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M15 18l-6-6 6-6"/>
@@ -149,161 +148,170 @@
 <!-- ============================================ -->
 <main class="main" id="mainContent" style="display:none">
   
-  <!-- DASHBOARD PAGE - VERSÃO PREMIUM -->
+  <!-- DASHBOARD PAGE - ESTILO CRM PREMIUM -->
   <div class="page active" id="page-dashboard">
-    <div class="page-header">
-      <div>
-        <div class="page-title">Dashboard</div>
-        <div class="page-sub">Visão geral das suas finanças</div>
+    <!-- Header com perfil e ações -->
+    <div class="dashboard-header">
+      <div class="dashboard-header-title">
+        <h1 class="dashboard-title">Dashboard</h1>
+        <p class="dashboard-subtitle">Visão geral das suas finanças</p>
       </div>
-      <button class="btn btn-primary" onclick="window.Transactions?.openModal()">
-        <span>+</span> Nova transação
-      </button>
-    </div>
-    
-    <!-- Cards Principais -->
-    <div class="dashboard-grid">
-      <div class="dashboard-card dashboard-card-highlight">
-        <div class="dashboard-card-icon">💰</div>
-        <div class="dashboard-card-content">
-          <div class="dashboard-card-label">SALDO TOTAL</div>
-          <div class="dashboard-card-value" id="totalBalance">R$ 0,00</div>
-          <div class="dashboard-card-trend up">▲ +0% este mês</div>
-        </div>
-      </div>
-      <div class="dashboard-card">
-        <div class="dashboard-card-icon income">📈</div>
-        <div class="dashboard-card-content">
-          <div class="dashboard-card-label">RECEITAS DO MÊS</div>
-          <div class="dashboard-card-value income" id="monthlyIncome">R$ 0,00</div>
-          <div class="dashboard-card-sub">Meta: R$ 2.000,00</div>
-        </div>
-      </div>
-      <div class="dashboard-card">
-        <div class="dashboard-card-icon expense">📉</div>
-        <div class="dashboard-card-content">
-          <div class="dashboard-card-label">DESPESAS DO MÊS</div>
-          <div class="dashboard-card-value expense" id="monthlyExpense">R$ 0,00</div>
-          <div class="dashboard-card-sub">Limite: R$ 1.500,00</div>
-        </div>
-      </div>
-      <div class="dashboard-card">
-        <div class="dashboard-card-icon saving">🎯</div>
-        <div class="dashboard-card-content">
-          <div class="dashboard-card-label">ECONOMIA DO MÊS</div>
-          <div class="dashboard-card-value saving" id="savingsRate">0%</div>
-          <div class="dashboard-card-sub">da receita total</div>
+      <div class="dashboard-header-actions">
+        <button class="btn btn-primary" onclick="window.Transactions?.openModal()">
+          <span>+</span> Nova transação
+        </button>
+        <div class="user-profile-badge">
+          <div class="user-avatar-small" id="dashboardAvatar">U</div>
+          <div class="user-info-small">
+            <span class="user-name-small" id="dashboardUserName">Usuário</span>
+            <span class="user-plan-small">Plano Premium</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Cards Secundários -->
-    <div class="dashboard-subgrid">
-      <div class="dashboard-card small">
-        <div class="dashboard-card-icon">🏦</div>
-        <div class="dashboard-card-content">
-          <div class="dashboard-card-label">TOTAL EM BANCOS</div>
-          <div class="dashboard-card-value" id="totalBankBalance">R$ 0,00</div>
+    <!-- Cards Row 1: Métricas principais -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon green">💰</div>
+        <div class="stat-content">
+          <span class="stat-label">Saldo Total</span>
+          <span class="stat-value" id="totalBalance">R$ 0,00</span>
+          <span class="stat-trend up">▲ +0% este mês</span>
         </div>
       </div>
-      <div class="dashboard-card small">
-        <div class="dashboard-card-icon">👛</div>
-        <div class="dashboard-card-content">
-          <div class="dashboard-card-label">TOTAL EM CARTEIRA</div>
-          <div class="dashboard-card-value" id="totalWalletBalance">R$ 0,00</div>
+      <div class="stat-card">
+        <div class="stat-icon blue">📈</div>
+        <div class="stat-content">
+          <span class="stat-label">Receitas (Mês)</span>
+          <span class="stat-value" id="monthlyIncome">R$ 0,00</span>
+          <span class="stat-target">Meta: R$ 2.000</span>
         </div>
       </div>
-      <div class="dashboard-card small">
-        <div class="dashboard-card-icon">🏆</div>
-        <div class="dashboard-card-content">
-          <div class="dashboard-card-label">METAS ATIVAS</div>
-          <div class="dashboard-card-value" id="activeGoals">0</div>
+      <div class="stat-card">
+        <div class="stat-icon red">📉</div>
+        <div class="stat-content">
+          <span class="stat-label">Despesas (Mês)</span>
+          <span class="stat-value" id="monthlyExpense">R$ 0,00</span>
+          <span class="stat-target">Limite: R$ 1.500</span>
         </div>
       </div>
-      <div class="dashboard-card small">
-        <div class="dashboard-card-icon danger">⚠️</div>
-        <div class="dashboard-card-content">
-          <div class="dashboard-card-label">CONTAS A VENCER</div>
-          <div class="dashboard-card-value danger" id="pendingBillsCount">0</div>
+      <div class="stat-card">
+        <div class="stat-icon purple">🎯</div>
+        <div class="stat-content">
+          <span class="stat-label">Economia</span>
+          <span class="stat-value" id="savingsRate">0%</span>
+          <span class="stat-target">da receita total</span>
         </div>
       </div>
     </div>
 
-    <!-- Resumo das Contas -->
-    <div class="chart-card accounts-summary" id="accountsSummaryCard" style="cursor: pointer;">
-      <div class="chart-header">
-        <div class="chart-title">
-          <span class="title-icon">🏦</span>
-          Resumo das Suas Contas
-        </div>
-        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); window.Dashboard?.showAccountDetails()">Ver Detalhes →</button>
+    <!-- Cards Row 2: Indicadores secundários -->
+    <div class="stats-subgrid">
+      <div class="stat-card-small">
+        <span class="stat-label-small">🏦 TOTAL EM BANCOS</span>
+        <span class="stat-value-small" id="totalBankBalance">R$ 0,00</span>
       </div>
-      <div id="accountsSummaryContent" class="accounts-summary-grid">
-        <div class="account-placeholder">Carregando contas...</div>
+      <div class="stat-card-small">
+        <span class="stat-label-small">👛 TOTAL EM CARTEIRA</span>
+        <span class="stat-value-small" id="totalWalletBalance">R$ 0,00</span>
+      </div>
+      <div class="stat-card-small">
+        <span class="stat-label-small">🏆 METAS ATIVAS</span>
+        <span class="stat-value-small" id="activeGoals">0</span>
+      </div>
+      <div class="stat-card-small">
+        <span class="stat-label-small">📅 CONTAS A VENCER</span>
+        <span class="stat-value-small danger" id="pendingBillsCount">0</span>
       </div>
     </div>
 
-    <!-- Gráficos -->
-    <div class="charts-row">
-      <div class="chart-card">
-        <div class="chart-header"><div class="chart-title">📊 Gastos por Categoria</div></div>
-        <canvas id="expenseChart" style="max-height: 220px; width: 100%;"></canvas>
-      </div>
-      <div class="chart-card">
-        <div class="chart-header"><div class="chart-title">🏦 Distribuição por Banco</div></div>
-        <canvas id="bankDistributionChart" style="max-height: 220px; width: 100%;"></canvas>
-      </div>
-    </div>
-    
-    <div class="chart-card">
-      <div class="chart-header"><div class="chart-title">📈 Evolução Patrimonial (6 meses)</div></div>
-      <canvas id="evolutionChart" style="max-height: 200px; width: 100%;"></canvas>
-    </div>
-    
-    <div class="charts-row">
-      <div class="chart-card">
-        <div class="chart-header">
-          <div class="chart-title">📈 Previsão de Gastos</div>
-          <span class="badge-warning">30 dias</span>
+    <!-- Grid principal: Gráficos lado a lado -->
+    <div class="charts-main-grid">
+      <div class="chart-card-modern">
+        <div class="chart-card-header">
+          <span class="chart-card-title">📊 Gastos por Categoria</span>
+          <span class="chart-card-badge">Este mês</span>
         </div>
-        <canvas id="forecastChart" style="max-height: 200px; width: 100%;"></canvas>
+        <canvas id="expenseChart" style="height: 220px; width: 100%;"></canvas>
       </div>
-      <div class="chart-card">
-        <div class="chart-header">
-          <div class="chart-title">📊 Comparação Mês a Mês</div>
-          <select id="comparisonYear" class="form-select year-select" onchange="window.Charts?.renderComparisonChart()">
+      <div class="chart-card-modern">
+        <div class="chart-card-header">
+          <span class="chart-card-title">🏦 Distribuição por Banco</span>
+          <span class="chart-card-badge">Por saldo</span>
+        </div>
+        <canvas id="bankDistributionChart" style="height: 220px; width: 100%;"></canvas>
+      </div>
+    </div>
+
+    <!-- Gráfico de Evolução (Full width) -->
+    <div class="chart-card-full">
+      <div class="chart-card-header">
+        <span class="chart-card-title">📈 Evolução Patrimonial (6 meses)</span>
+        <span class="chart-card-badge">Receitas vs Despesas</span>
+      </div>
+      <canvas id="evolutionChart" style="height: 250px; width: 100%;"></canvas>
+    </div>
+
+    <!-- Grid de gráficos avançados -->
+    <div class="charts-two-columns">
+      <div class="chart-card-modern">
+        <div class="chart-card-header">
+          <span class="chart-card-title">📈 Previsão de Gastos</span>
+          <span class="chart-card-badge warning">Próximos 30 dias</span>
+        </div>
+        <canvas id="forecastChart" style="height: 200px; width: 100%;"></canvas>
+      </div>
+      <div class="chart-card-modern">
+        <div class="chart-card-header">
+          <span class="chart-card-title">📊 Comparação Mês a Mês</span>
+          <select id="comparisonYear" class="year-select-modern" onchange="window.Charts?.renderComparisonChart()">
             <option value="2023">2023</option>
             <option value="2024">2024</option>
             <option value="2025">2025</option>
             <option value="2026" selected>2026</option>
           </select>
         </div>
-        <canvas id="comparisonChart" style="max-height: 200px; width: 100%;"></canvas>
+        <canvas id="comparisonChart" style="height: 200px; width: 100%;"></canvas>
       </div>
     </div>
-    
-    <div class="chart-card">
-      <div class="chart-header">
-        <div class="chart-title">🎯 Metas vs Realizado</div>
-        <button class="btn btn-ghost btn-sm" onclick="window.Charts?.renderGoalsVsActual()">⟳ Atualizar</button>
+
+    <!-- Metas vs Realizado -->
+    <div class="chart-card-full">
+      <div class="chart-card-header">
+        <span class="chart-card-title">🎯 Metas vs Realizado</span>
+        <button class="btn-link" onclick="window.Charts?.renderGoalsVsActual()">⟳ Atualizar</button>
       </div>
-      <canvas id="goalsVsActualChart" style="max-height: 250px; width: 100%;"></canvas>
+      <canvas id="goalsVsActualChart" style="height: 250px; width: 100%;"></canvas>
     </div>
-    
-    <div class="chart-card" id="goalsContainer">
-      <div class="chart-header">
-        <div class="chart-title">🎯 Minhas Metas</div>
-        <button class="btn btn-primary btn-sm" id="newGoalBtn">+ Nova Meta</button>
+
+    <!-- Seção de Metas e Transações Recentes -->
+    <div class="two-columns-section">
+      <div class="section-card">
+        <div class="section-header">
+          <span class="section-title">🎯 Minhas Metas</span>
+          <button class="btn-link" id="newGoalBtn">+ Nova Meta</button>
+        </div>
+        <div id="goalsList"></div>
       </div>
-      <div id="goalsList"></div>
+      <div class="section-card">
+        <div class="section-header">
+          <span class="section-title">📋 Últimas Transações</span>
+          <button class="btn-link" id="viewAllBtn">Ver todas →</button>
+        </div>
+        <div id="recentTransactions" class="tx-list-modern"></div>
+      </div>
     </div>
-    
-    <div class="chart-card">
-      <div class="chart-header">
-        <div class="chart-title">📋 Últimas Transações</div>
-        <button class="btn btn-ghost btn-sm" id="viewAllBtn">Ver todas →</button>
+
+    <!-- Resumo das Contas -->
+    <div class="section-card-full">
+      <div class="section-header">
+        <span class="section-title">🏦 Resumo das Suas Contas</span>
+        <button class="btn-link" onclick="event.stopPropagation(); window.Dashboard?.showAccountDetails()">Ver Detalhes →</button>
       </div>
-      <div id="recentTransactions" class="tx-list"></div>
+      <div id="accountsSummaryContent" class="accounts-grid-modern">
+        <div class="account-placeholder">Carregando contas...</div>
+      </div>
     </div>
   </div>
 
@@ -320,12 +328,8 @@
       </div>
       <div style="overflow-x: auto;">
         <table class="data-table">
-          <thead>
-            <tr><th>Descrição</th><th>Tipo</th><th>Categoria</th><th>Data</th><th>Valor</th><th style="text-align: center;">Ações</th></tr>
-          </thead>
-          <tbody id="transactionsList">
-            <tr><td colspan="6" style="text-align: center; padding: var(--space-16); color: var(--text-tertiary);"><div style="font-size: 48px; margin-bottom: var(--space-4);">💳</div><div>Carregando transações...</div></td></tr>
-          </tbody>
+          <thead><tr><th>Descrição</th><th>Tipo</th><th>Categoria</th><th>Data</th><th>Valor</th><th style="text-align: center;">Ações</th></tr></thead>
+          <tbody id="transactionsList"><tr><td colspan="6" style="text-align: center; padding: var(--space-16); color: var(--text-tertiary);"><div style="font-size: 48px; margin-bottom: var(--space-4);">💳</div><div>Carregando transações...</div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -353,17 +357,8 @@
   <!-- REPORTS PAGE -->
   <div class="page" id="page-reports">
     <div class="page-header"><div><div class="page-title">Relatórios</div><div class="page-sub">Análise detalhada das suas finanças</div></div></div>
-    <div class="cards-grid">
-      <div class="card"><div class="card-label">💰 RECEITAS</div><div class="card-value success" id="reportIncome">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">💸 DESPESAS</div><div class="card-value danger" id="reportExpense">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">⚖️ SALDO</div><div class="card-value" id="reportBalance">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">📊 TOTAL TRANS.</div><div class="card-value" id="reportTransactionCount">0</div></div>
-    </div>
-    <div class="cards-grid">
-      <div class="card"><div class="card-label">🏆 CATEGORIA MAIS USADA</div><div class="card-value" id="reportTopCategory">-</div></div>
-      <div class="card"><div class="card-label">📈 MAIOR RECEITA</div><div class="card-value success" id="reportMaxIncome">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">📉 MAIOR DESPESA</div><div class="card-value danger" id="reportMaxExpense">R$ 0,00</div></div>
-    </div>
+    <div class="cards-grid"><div class="card"><div class="card-label">💰 RECEITAS</div><div class="card-value success" id="reportIncome">R$ 0,00</div></div><div class="card"><div class="card-label">💸 DESPESAS</div><div class="card-value danger" id="reportExpense">R$ 0,00</div></div><div class="card"><div class="card-label">⚖️ SALDO</div><div class="card-value" id="reportBalance">R$ 0,00</div></div><div class="card"><div class="card-label">📊 TOTAL TRANS.</div><div class="card-value" id="reportTransactionCount">0</div></div></div>
+    <div class="cards-grid"><div class="card"><div class="card-label">🏆 CATEGORIA MAIS USADA</div><div class="card-value" id="reportTopCategory">-</div></div><div class="card"><div class="card-label">📈 MAIOR RECEITA</div><div class="card-value success" id="reportMaxIncome">R$ 0,00</div></div><div class="card"><div class="card-label">📉 MAIOR DESPESA</div><div class="card-value danger" id="reportMaxExpense">R$ 0,00</div></div></div>
     <div class="chart-card"><div class="chart-header"><div class="chart-title">📊 Gastos por Categoria (Período)</div></div><canvas id="reportCategoryChart"></canvas></div>
     <div id="reportTransactions"></div>
   </div>
