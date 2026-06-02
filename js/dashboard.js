@@ -1,5 +1,5 @@
 // ============================================
-// DASHBOARD (COMPLETO - COM GRÁFICOS)
+// DASHBOARD - VERSÃO PREMIUM
 // ============================================
 const Dashboard = {
   update() {
@@ -9,7 +9,6 @@ const Dashboard = {
     this.updateAccountsSummary();
     this.updateAccountsSummaryCard();
     
-    // Atualizar gráficos avançados
     if (window.Charts) {
       setTimeout(() => {
         Charts.renderForecastChart();
@@ -35,7 +34,29 @@ const Dashboard = {
     if (totalBalanceEl) totalBalanceEl.innerHTML = `R$ ${Utils.formatMoney(totalBalance)}`;
     if (savingsRateEl) savingsRateEl.innerHTML = `${savingsRate}%`;
     
-    console.log('Saldo total atualizado:', totalBalance);
+    // Atualizar tendência
+    const trendEl = document.querySelector('.dashboard-card-highlight .dashboard-card-trend');
+    if (trendEl && totalIncome > 0) {
+      const prevMonth = this.getPreviousMonthBalance();
+      const percentChange = prevMonth > 0 ? ((totalBalance - prevMonth) / prevMonth * 100).toFixed(0) : 0;
+      trendEl.innerHTML = percentChange >= 0 ? `▲ +${percentChange}% este mês` : `▼ ${percentChange}% este mês`;
+      trendEl.className = `dashboard-card-trend ${percentChange >= 0 ? 'up' : 'down'}`;
+    }
+  },
+  
+  getPreviousMonthBalance() {
+    const now = new Date();
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    let balance = 0;
+    
+    AppState.transactions.forEach(t => {
+      const d = new Date(t.date);
+      if (d.getMonth() === lastMonth.getMonth() && d.getFullYear() === lastMonth.getFullYear()) {
+        if (t.type === 'in') balance += t.amount;
+        else balance -= t.amount;
+      }
+    });
+    return balance;
   },
   
   updateMonthlyCards() {
@@ -103,12 +124,6 @@ const Dashboard = {
     
     if (totalAccountsBalanceEl) totalAccountsBalanceEl.innerHTML = `R$ ${Utils.formatMoney(totalAccountsBalance)}`;
     if (accountsCountEl) accountsCountEl.innerHTML = AppState.accounts?.length || 0;
-    
-    console.log('Resumo das contas:', {
-      total: totalAccountsBalance,
-      count: AppState.accounts?.length,
-      accounts: AppState.accounts
-    });
   },
   
   updateAccountsSummaryCard() {
@@ -116,16 +131,18 @@ const Dashboard = {
     if (!container) return;
     
     if (!AppState.accounts || AppState.accounts.length === 0) {
-      container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);width:100%;">Nenhuma conta cadastrada</div>';
+      container.innerHTML = '<div class="account-placeholder">🏦 Nenhuma conta cadastrada</div>';
       return;
     }
     
     container.innerHTML = AppState.accounts.map(acc => `
-      <div style="text-align:center; min-width: 100px; background:var(--bg3); padding:12px; border-radius:12px;">
-        <div style="font-size: 28px;">${acc.icon || '🏦'}</div>
-        <div style="font-weight: 600; font-size: 12px; margin-top: 5px;">${Utils.escapeHtml(acc.name)}</div>
-        <div style="font-size: 14px; font-weight: 700; color: var(--green); margin-top: 5px;">R$ ${Utils.formatMoney(acc.balance)}</div>
-        <div style="font-size: 10px; color: var(--muted);">${acc.bank}</div>
+      <div class="account-item">
+        <div class="account-icon">${acc.icon || '🏦'}</div>
+        <div class="account-info">
+          <div class="account-name">${Utils.escapeHtml(acc.name)}</div>
+          <div class="account-bank">${acc.bank}</div>
+          <div class="account-balance">R$ ${Utils.formatMoney(acc.balance)}</div>
+        </div>
       </div>
     `).join('');
   },
