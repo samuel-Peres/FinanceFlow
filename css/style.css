@@ -436,7 +436,7 @@ body {
 }
 .stat-value-small.danger { color: var(--danger); }
 
-/* Chart Cards */
+/* Chart Cards - COM GRÁFICOS MENORES */
 .charts-main-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -448,6 +448,12 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: var(--space-5);
+}
+.chart-small {
+  padding: var(--space-4) !important;
+}
+.chart-small .chart-card-header {
+  margin-bottom: var(--space-3) !important;
 }
 .chart-card-full {
   background: var(--bg-surface);
@@ -841,6 +847,11 @@ body {
   top: -9999px !important;
   left: -9999px !important;
   pointer-events: none !important;
+}
+
+/* Gráficos menores */
+.chart-small canvas {
+  max-height: 160px !important;
 }
 
 /* UTILITÁRIOS */
