@@ -79,7 +79,6 @@ const Transactions = {
     
     tbody.innerHTML = html;
     
-    // Bind events
     document.querySelectorAll('.tx-btn-edit').forEach(btn => {
       btn.onclick = (e) => {
         e.stopPropagation();
