@@ -20,6 +20,15 @@
 <body>
 
 <!-- ============================================ -->
+<!-- BOTÃO HAMBÚRGUER PARA MOBILE -->
+<!-- ============================================ -->
+<div class="hamburger" id="hamburgerBtn">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<!-- ============================================ -->
 <!-- LOGIN PAGE PREMIUM -->
 <!-- ============================================ -->
 <div class="login-page active" id="loginPage">
@@ -65,10 +74,10 @@
 </div>
 
 <!-- ============================================ -->
-<!-- SIDEBAR (DESKTOP) -->
+<!-- SIDEBAR (DESKTOP E MOBILE) -->
 <!-- ============================================ -->
 <nav class="sidebar" id="sidebar" style="display:none">
-  <!-- Botão Toggle -->
+  <!-- Botão Toggle (desktop) -->
   <div class="sidebar-toggle" id="sidebarToggle">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M15 18l-6-6 6-6"/>
@@ -136,92 +145,164 @@
 </nav>
 
 <!-- ============================================ -->
-<!-- MOBILE USER BAR -->
-<!-- ============================================ -->
-<div id="mobileUserBar" style="display:none">
-  <div style="display:flex; align-items:center; gap:12px">
-    <div class="avatar" id="mobileAvatar" style="width:40px;height:40px;font-size:14px">U</div>
-    <div>
-      <div class="user-name" id="mobileUserName" style="font-size:14px;font-weight:600"></div>
-      <div class="user-plan" id="mobileUserEmail" style="font-size:11px;color:var(--text-tertiary)"></div>
-    </div>
-  </div>
-  <button class="btn btn-ghost btn-sm" id="mobileLogoutBtn">Sair</button>
-</div>
-
-<!-- ============================================ -->
 <!-- MAIN CONTENT -->
 <!-- ============================================ -->
 <main class="main" id="mainContent" style="display:none">
-  <!-- DASHBOARD PAGE -->
+  
+  <!-- DASHBOARD PAGE - VERSÃO PREMIUM -->
   <div class="page active" id="page-dashboard">
     <div class="page-header">
       <div>
         <div class="page-title">Dashboard</div>
         <div class="page-sub">Visão geral das suas finanças</div>
       </div>
-      <button class="btn btn-primary" onclick="window.Transactions?.openModal()">+ Nova transação</button>
+      <button class="btn btn-primary" onclick="window.Transactions?.openModal()">
+        <span>+</span> Nova transação
+      </button>
     </div>
     
-    <div class="cards-grid">
-      <div class="card card-primary">
-        <div class="card-label">💰 SALDO TOTAL</div>
-        <div class="card-value success" id="totalBalance">R$ 0,00</div>
-        <div class="card-bg-icon">💰</div>
+    <!-- Cards Principais -->
+    <div class="dashboard-grid">
+      <div class="dashboard-card dashboard-card-highlight">
+        <div class="dashboard-card-icon">💰</div>
+        <div class="dashboard-card-content">
+          <div class="dashboard-card-label">SALDO TOTAL</div>
+          <div class="dashboard-card-value" id="totalBalance">R$ 0,00</div>
+          <div class="dashboard-card-trend up">▲ +0% este mês</div>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-label">📈 RECEITAS (MÊS)</div>
-        <div class="card-value success" id="monthlyIncome">R$ 0,00</div>
-        <div class="card-bg-icon">📈</div>
+      <div class="dashboard-card">
+        <div class="dashboard-card-icon income">📈</div>
+        <div class="dashboard-card-content">
+          <div class="dashboard-card-label">RECEITAS DO MÊS</div>
+          <div class="dashboard-card-value income" id="monthlyIncome">R$ 0,00</div>
+          <div class="dashboard-card-sub">Meta: R$ 2.000,00</div>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-label">📉 DESPESAS (MÊS)</div>
-        <div class="card-value danger" id="monthlyExpense">R$ 0,00</div>
-        <div class="card-bg-icon">📉</div>
+      <div class="dashboard-card">
+        <div class="dashboard-card-icon expense">📉</div>
+        <div class="dashboard-card-content">
+          <div class="dashboard-card-label">DESPESAS DO MÊS</div>
+          <div class="dashboard-card-value expense" id="monthlyExpense">R$ 0,00</div>
+          <div class="dashboard-card-sub">Limite: R$ 1.500,00</div>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-label">🎯 ECONOMIA</div>
-        <div class="card-value warning" id="savingsRate">0%</div>
-        <div class="card-bg-icon">🎯</div>
+      <div class="dashboard-card">
+        <div class="dashboard-card-icon saving">🎯</div>
+        <div class="dashboard-card-content">
+          <div class="dashboard-card-label">ECONOMIA DO MÊS</div>
+          <div class="dashboard-card-value saving" id="savingsRate">0%</div>
+          <div class="dashboard-card-sub">da receita total</div>
+        </div>
       </div>
     </div>
-    
-    <div class="cards-grid">
-      <div class="card"><div class="card-label">🏦 TOTAL EM BANCOS</div><div class="card-value success" id="totalBankBalance">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">👛 TOTAL EM CARTEIRA</div><div class="card-value success" id="totalWalletBalance">R$ 0,00</div></div>
-      <div class="card"><div class="card-label">🏆 METAS ATIVAS</div><div class="card-value warning" id="activeGoals">0</div></div>
-      <div class="card"><div class="card-label">📅 CONTAS A VENCER</div><div class="card-value danger" id="pendingBillsCount">0</div></div>
+
+    <!-- Cards Secundários -->
+    <div class="dashboard-subgrid">
+      <div class="dashboard-card small">
+        <div class="dashboard-card-icon">🏦</div>
+        <div class="dashboard-card-content">
+          <div class="dashboard-card-label">TOTAL EM BANCOS</div>
+          <div class="dashboard-card-value" id="totalBankBalance">R$ 0,00</div>
+        </div>
+      </div>
+      <div class="dashboard-card small">
+        <div class="dashboard-card-icon">👛</div>
+        <div class="dashboard-card-content">
+          <div class="dashboard-card-label">TOTAL EM CARTEIRA</div>
+          <div class="dashboard-card-value" id="totalWalletBalance">R$ 0,00</div>
+        </div>
+      </div>
+      <div class="dashboard-card small">
+        <div class="dashboard-card-icon">🏆</div>
+        <div class="dashboard-card-content">
+          <div class="dashboard-card-label">METAS ATIVAS</div>
+          <div class="dashboard-card-value" id="activeGoals">0</div>
+        </div>
+      </div>
+      <div class="dashboard-card small">
+        <div class="dashboard-card-icon danger">⚠️</div>
+        <div class="dashboard-card-content">
+          <div class="dashboard-card-label">CONTAS A VENCER</div>
+          <div class="dashboard-card-value danger" id="pendingBillsCount">0</div>
+        </div>
+      </div>
     </div>
-    
-    <div class="chart-card" id="accountsSummaryCard" style="cursor: pointer;">
+
+    <!-- Resumo das Contas -->
+    <div class="chart-card accounts-summary" id="accountsSummaryCard" style="cursor: pointer;">
       <div class="chart-header">
-        <div class="chart-title">🏦 Resumo das Suas Contas</div>
+        <div class="chart-title">
+          <span class="title-icon">🏦</span>
+          Resumo das Suas Contas
+        </div>
         <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); window.Dashboard?.showAccountDetails()">Ver Detalhes →</button>
       </div>
-      <div id="accountsSummaryContent" class="text-center" style="padding: var(--space-5); color: var(--text-tertiary);">Carregando contas...</div>
+      <div id="accountsSummaryContent" class="accounts-summary-grid">
+        <div class="account-placeholder">Carregando contas...</div>
+      </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title">📊 Gastos por Categoria</div></div>
+        <canvas id="expenseChart" style="max-height: 220px; width: 100%;"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div class="chart-title">🏦 Distribuição por Banco</div></div>
+        <canvas id="bankDistributionChart" style="max-height: 220px; width: 100%;"></canvas>
+      </div>
+    </div>
+    
+    <div class="chart-card">
+      <div class="chart-header"><div class="chart-title">📈 Evolução Patrimonial (6 meses)</div></div>
+      <canvas id="evolutionChart" style="max-height: 200px; width: 100%;"></canvas>
     </div>
     
     <div class="charts-row">
-      <div class="chart-card"><div class="chart-header"><div class="chart-title">📊 Gastos por Categoria</div></div><canvas id="expenseChart" style="max-height: 220px; width: 100%;"></canvas></div>
-      <div class="chart-card"><div class="chart-header"><div class="chart-title">🏦 Distribuição por Banco</div></div><canvas id="bankDistributionChart" style="max-height: 220px; width: 100%;"></canvas></div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">📈 Previsão de Gastos</div>
+          <span class="badge-warning">30 dias</span>
+        </div>
+        <canvas id="forecastChart" style="max-height: 200px; width: 100%;"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">📊 Comparação Mês a Mês</div>
+          <select id="comparisonYear" class="form-select year-select" onchange="window.Charts?.renderComparisonChart()">
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026" selected>2026</option>
+          </select>
+        </div>
+        <canvas id="comparisonChart" style="max-height: 200px; width: 100%;"></canvas>
+      </div>
     </div>
     
-    <div class="chart-card"><div class="chart-header"><div class="chart-title">📈 Evolução Patrimonial (6 meses)</div></div><canvas id="evolutionChart" style="max-height: 200px; width: 100%;"></canvas></div>
-    
-    <div class="charts-row">
-      <div class="chart-card"><div class="chart-header"><div class="chart-title">📈 Previsão de Gastos</div><span style="background: var(--warning-bg); color: var(--warning); padding: 2px 8px; border-radius: var(--radius-sm); font-size: var(--text-xs);">30 dias</span></div><canvas id="forecastChart" style="max-height: 200px; width: 100%;"></canvas></div>
-      <div class="chart-card"><div class="chart-header"><div class="chart-title">📊 Comparação Mês a Mês</div><select id="comparisonYear" class="form-select" style="width: auto; padding: var(--space-2) var(--space-3);" onchange="window.Charts?.renderComparisonChart()"><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026" selected>2026</option></select></div><canvas id="comparisonChart" style="max-height: 200px; width: 100%;"></canvas></div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">🎯 Metas vs Realizado</div>
+        <button class="btn btn-ghost btn-sm" onclick="window.Charts?.renderGoalsVsActual()">⟳ Atualizar</button>
+      </div>
+      <canvas id="goalsVsActualChart" style="max-height: 250px; width: 100%;"></canvas>
     </div>
-    
-    <div class="chart-card"><div class="chart-header"><div class="chart-title">🎯 Metas vs Realizado</div><button class="btn btn-ghost btn-sm" onclick="window.Charts?.renderGoalsVsActual()">⟳ Atualizar</button></div><canvas id="goalsVsActualChart" style="max-height: 250px; width: 100%;"></canvas></div>
     
     <div class="chart-card" id="goalsContainer">
-      <div class="chart-header"><div class="chart-title">🎯 Minhas Metas</div><button class="btn btn-primary btn-sm" id="newGoalBtn">+ Nova Meta</button></div>
+      <div class="chart-header">
+        <div class="chart-title">🎯 Minhas Metas</div>
+        <button class="btn btn-primary btn-sm" id="newGoalBtn">+ Nova Meta</button>
+      </div>
       <div id="goalsList"></div>
     </div>
     
     <div class="chart-card">
-      <div class="chart-header"><div class="chart-title">📋 Últimas Transações</div><button class="btn btn-ghost btn-sm" id="viewAllBtn">Ver todas →</button></div>
+      <div class="chart-header">
+        <div class="chart-title">📋 Últimas Transações</div>
+        <button class="btn btn-ghost btn-sm" id="viewAllBtn">Ver todas →</button>
+      </div>
       <div id="recentTransactions" class="tx-list"></div>
     </div>
   </div>
@@ -237,7 +318,16 @@
           <select class="form-select" id="categoryFilter" style="width: auto;"><option value="all">Todas categorias</option><option value="Alimentação">🍔 Alimentação</option><option value="Transporte">🚗 Transporte</option><option value="Moradia">🏠 Moradia</option><option value="Salário">💼 Salário</option><option value="Lazer">🎬 Lazer</option><option value="Saúde">🏥 Saúde</option><option value="Outros">📌 Outros</option></select>
         </div>
       </div>
-      <div style="overflow-x: auto;"><table class="data-table"><thead><tr><th>Descrição</th><th>Tipo</th><th>Categoria</th><th>Data</th><th>Valor</th><th style="text-align: center;">Ações</th></tr></thead><tbody id="transactionsList"><tr><td colspan="6" style="text-align: center; padding: var(--space-16); color: var(--text-tertiary);"><div style="font-size: 48px; margin-bottom: var(--space-4);">💳</div><div>Carregando transações...</div></td></tr></tbody></table></div>
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr><th>Descrição</th><th>Tipo</th><th>Categoria</th><th>Data</th><th>Valor</th><th style="text-align: center;">Ações</th></tr>
+          </thead>
+          <tbody id="transactionsList">
+            <tr><td colspan="6" style="text-align: center; padding: var(--space-16); color: var(--text-tertiary);"><div style="font-size: 48px; margin-bottom: var(--space-4);">💳</div><div>Carregando transações...</div></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -249,28 +339,127 @@
   </div>
 
   <!-- BILLS PAGE -->
-  <div class="page" id="page-bills">...</div>
+  <div class="page" id="page-bills">
+    <div class="page-header"><div><div class="page-title">Contas a Pagar</div><div class="page-sub">Gerencie suas obrigações financeiras</div></div><button class="btn btn-primary" onclick="window.Bills?.openModal()">+ Nova Conta</button></div>
+    <div id="billsList"></div>
+  </div>
+
   <!-- INSTALLMENTS PAGE -->
-  <div class="page" id="page-installments">...</div>
+  <div class="page" id="page-installments">
+    <div class="page-header"><div><div class="page-title">Parcelamentos</div><div class="page-sub">Acompanhe suas compras parceladas</div></div><button class="btn btn-primary" onclick="window.Installments?.openModal()">+ Novo Parcelamento</button></div>
+    <div id="installmentsList"></div>
+  </div>
+
   <!-- REPORTS PAGE -->
-  <div class="page" id="page-reports">...</div>
+  <div class="page" id="page-reports">
+    <div class="page-header"><div><div class="page-title">Relatórios</div><div class="page-sub">Análise detalhada das suas finanças</div></div></div>
+    <div class="cards-grid">
+      <div class="card"><div class="card-label">💰 RECEITAS</div><div class="card-value success" id="reportIncome">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">💸 DESPESAS</div><div class="card-value danger" id="reportExpense">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">⚖️ SALDO</div><div class="card-value" id="reportBalance">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">📊 TOTAL TRANS.</div><div class="card-value" id="reportTransactionCount">0</div></div>
+    </div>
+    <div class="cards-grid">
+      <div class="card"><div class="card-label">🏆 CATEGORIA MAIS USADA</div><div class="card-value" id="reportTopCategory">-</div></div>
+      <div class="card"><div class="card-label">📈 MAIOR RECEITA</div><div class="card-value success" id="reportMaxIncome">R$ 0,00</div></div>
+      <div class="card"><div class="card-label">📉 MAIOR DESPESA</div><div class="card-value danger" id="reportMaxExpense">R$ 0,00</div></div>
+    </div>
+    <div class="chart-card"><div class="chart-header"><div class="chart-title">📊 Gastos por Categoria (Período)</div></div><canvas id="reportCategoryChart"></canvas></div>
+    <div id="reportTransactions"></div>
+  </div>
+
   <!-- EXPORT PAGE -->
-  <div class="page" id="page-export">...</div>
+  <div class="page" id="page-export">
+    <div class="page-header"><div><div class="page-title">Exportar Dados</div><div class="page-sub">Exporte suas transações em diferentes formatos</div></div></div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
+      <div class="card text-center" data-format="csv" style="cursor: pointer;"><div style="font-size: 48px;">📊</div><div style="font-weight: 700;">CSV</div><div style="font-size: var(--text-xs); color: var(--text-tertiary);">Exportar para Excel</div></div>
+      <div class="card text-center" data-format="json" style="cursor: pointer;"><div style="font-size: 48px;">📄</div><div style="font-weight: 700;">JSON</div><div style="font-size: var(--text-xs); color: var(--text-tertiary);">Formato estruturado</div></div>
+      <div class="card text-center" data-format="pdf" style="cursor: pointer;"><div style="font-size: 48px;">📑</div><div style="font-weight: 700;">PDF</div><div style="font-size: var(--text-xs); color: var(--text-tertiary);">Relatório formatado</div></div>
+    </div>
+  </div>
+
   <!-- ALERTS PAGE -->
-  <div class="page" id="page-alerts">...</div>
+  <div class="page" id="page-alerts">
+    <div class="page-header"><div><div class="page-title">Alertas</div><div class="page-sub">Configure notificações</div></div></div>
+    <div class="chart-card">
+      <div class="chart-header"><div class="chart-title">💰 Alerta de Gasto Excessivo</div></div>
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);">
+        <div style="font-size: var(--text-sm); color: var(--text-secondary);">Notificar quando gastar mais que o limite mensal</div>
+        <input type="number" id="spendingLimit" placeholder="R$ 0,00" class="form-input" style="width: 150px;">
+      </div>
+    </div>
+  </div>
+
   <!-- CONFIG PAGE -->
-  <div class="page" id="page-config">...</div>
+  <div class="page" id="page-config">
+    <div class="page-header"><div><div class="page-title">Configurações</div><div class="page-sub">Gerencie suas preferências</div></div></div>
+    <div class="chart-card">
+      <div class="chart-header"><div class="chart-title">👤 Perfil</div></div>
+      <div style="display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-5);">
+        <div class="avatar" id="profileAvatar" style="width: 56px; height: 56px; font-size: var(--text-xl);">U</div>
+        <div><div id="profileName" style="font-weight: 700;"></div><div id="profileEmail" style="font-size: var(--text-sm); color: var(--text-tertiary);"></div></div>
+      </div>
+      <button class="btn btn-outline" id="configLogoutBtn">Sair da conta</button>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header"><div class="chart-title">🎨 Aparência</div></div>
+      <div style="display: flex; align-items: center; justify-content: space-between;"><span>Tema escuro</span><div class="toggle" id="themeToggle" style="cursor: pointer;"></div></div>
+    </div>
+  </div>
 </main>
 
 <!-- ============================================ -->
-<!-- MODALS -->
+<!-- MODAIS -->
 <!-- ============================================ -->
-<div class="modal-overlay" id="transactionModal"><div class="modal"><div class="modal-title" id="modalTitle">Nova Transação</div><div class="modal-sub">Preencha os dados da movimentação</div><div class="modal-grid"><div class="form-group"><label class="form-label">Conta</label><select class="form-select" id="transactionAccount"><option value="">Selecionar conta</option></select></div><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="transactionType"><option value="income">💰 Receita</option><option value="expense">💸 Despesa</option></select></div><div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="transactionCategory"><option value="Alimentação">🍔 Alimentação</option><option value="Transporte">🚗 Transporte</option><option value="Moradia">🏠 Moradia</option><option value="Salário">💼 Salário</option><option value="Lazer">🎬 Lazer</option><option value="Saúde">🏥 Saúde</option><option value="Outros">📌 Outros</option></select></div><div class="form-group"><label class="form-label">Descrição</label><input class="form-input" id="transactionDescription" placeholder="Ex: Compras do mês"></div><div class="form-group"><label class="form-label">Valor (R$)</label><input class="form-input" type="number" id="transactionAmount" step="0.01" placeholder="0,00"></div><div class="form-group"><label class="form-label">Data</label><input class="form-input" type="date" id="transactionDate"></div></div><div class="modal-footer"><button class="btn btn-secondary" id="cancelModalBtn">Cancelar</button><button class="btn btn-primary" id="saveTransactionBtn">Salvar</button></div></div></div>
+<div class="modal-overlay" id="transactionModal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Nova Transação</div>
+    <div class="modal-sub">Preencha os dados da movimentação</div>
+    <div class="modal-grid">
+      <div class="form-group"><label class="form-label">Conta</label><select class="form-select" id="transactionAccount"><option value="">Selecionar conta</option></select></div>
+      <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="transactionType"><option value="income">💰 Receita</option><option value="expense">💸 Despesa</option></select></div>
+      <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="transactionCategory"><option value="Alimentação">🍔 Alimentação</option><option value="Transporte">🚗 Transporte</option><option value="Moradia">🏠 Moradia</option><option value="Salário">💼 Salário</option><option value="Lazer">🎬 Lazer</option><option value="Saúde">🏥 Saúde</option><option value="Outros">📌 Outros</option></select></div>
+      <div class="form-group"><label class="form-label">Descrição</label><input class="form-input" id="transactionDescription" placeholder="Ex: Compras do mês"></div>
+      <div class="form-group"><label class="form-label">Valor (R$)</label><input class="form-input" type="number" id="transactionAmount" step="0.01" placeholder="0,00"></div>
+      <div class="form-group"><label class="form-label">Data</label><input class="form-input" type="date" id="transactionDate"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="cancelModalBtn">Cancelar</button><button class="btn btn-primary" id="saveTransactionBtn">Salvar</button></div>
+  </div>
+</div>
 
-<div class="modal-overlay" id="accountModal"><div class="modal"><div class="modal-title" id="modalAccountTitle">Nova Conta</div><div class="modal-sub">Adicione uma conta bancária</div><input type="hidden" id="accountId"><div class="modal-grid"><div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="accountName" placeholder="Ex: Nubank"></div><div class="form-group"><label class="form-label">Banco</label><input class="form-input" id="accountBank" placeholder="Nome do banco"></div><div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="accountType"><option value="corrente">💳 Conta Corrente</option><option value="poupanca">🏦 Poupança</option><option value="carteira">👛 Carteira</option><option value="dinheiro">💵 Dinheiro</option><option value="investimento">📈 Investimento</option><option value="cartao">💳 Cartão</option></select></div><div class="form-group"><label class="form-label">Ícone</label><input class="form-input" id="accountIcon" placeholder="🏦" maxlength="2"></div><div class="form-group"><label class="form-label">Cor</label><input class="form-input" type="color" id="accountColor" value="#00e5a0"></div><div class="form-group"><label class="form-label">Saldo Inicial</label><input class="form-input" type="number" id="accountBalance" step="0.01" placeholder="0,00"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="window.Accounts?.closeModal()">Cancelar</button><button class="btn btn-primary" onclick="window.Accounts?.save()">Salvar</button></div></div></div>
+<div class="modal-overlay" id="accountModal">
+  <div class="modal">
+    <div class="modal-title" id="modalAccountTitle">Nova Conta</div>
+    <div class="modal-sub">Adicione uma conta bancária</div>
+    <input type="hidden" id="accountId">
+    <div class="modal-grid">
+      <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="accountName" placeholder="Ex: Nubank"></div>
+      <div class="form-group"><label class="form-label">Banco</label><input class="form-input" id="accountBank" placeholder="Nome do banco"></div>
+      <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="accountType"><option value="corrente">💳 Conta Corrente</option><option value="poupanca">🏦 Poupança</option><option value="carteira">👛 Carteira</option><option value="dinheiro">💵 Dinheiro</option><option value="investimento">📈 Investimento</option><option value="cartao">💳 Cartão</option></select></div>
+      <div class="form-group"><label class="form-label">Ícone</label><input class="form-input" id="accountIcon" placeholder="🏦" maxlength="2"></div>
+      <div class="form-group"><label class="form-label">Cor</label><input class="form-input" type="color" id="accountColor" value="#00e5a0"></div>
+      <div class="form-group"><label class="form-label">Saldo Inicial</label><input class="form-input" type="number" id="accountBalance" step="0.01" placeholder="0,00"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="window.Accounts?.closeModal()">Cancelar</button><button class="btn btn-primary" onclick="window.Accounts?.save()">Salvar</button></div>
+  </div>
+</div>
 
-<div class="modal-overlay" id="goalModal"><div class="modal"><div class="modal-title">Nova Meta</div><div class="modal-sub">Defina um objetivo de economia</div><div class="modal-grid"><div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="goalName" placeholder="Ex: Viagem"></div><div class="form-group"><label class="form-label">Valor Alvo</label><input class="form-input" type="number" id="goalTarget" placeholder="0,00"></div><div class="form-group"><label class="form-label">Valor Atual</label><input class="form-input" type="number" id="goalCurrent" value="0" placeholder="0,00"></div><div class="form-group"><label class="form-label">Data Limite</label><input class="form-input" type="date" id="goalDeadline"></div><div class="form-group"><label class="form-label">Conta</label><select class="form-select" id="goalAccount"></select></div></div><div class="modal-footer"><button class="btn btn-secondary" id="cancelGoalBtn">Cancelar</button><button class="btn btn-primary" id="saveGoalBtn">Salvar</button></div></div></div>
+<div class="modal-overlay" id="goalModal">
+  <div class="modal">
+    <div class="modal-title">Nova Meta</div>
+    <div class="modal-sub">Defina um objetivo de economia</div>
+    <div class="modal-grid">
+      <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="goalName" placeholder="Ex: Viagem"></div>
+      <div class="form-group"><label class="form-label">Valor Alvo</label><input class="form-input" type="number" id="goalTarget" placeholder="0,00"></div>
+      <div class="form-group"><label class="form-label">Valor Atual</label><input class="form-input" type="number" id="goalCurrent" value="0" placeholder="0,00"></div>
+      <div class="form-group"><label class="form-label">Data Limite</label><input class="form-input" type="date" id="goalDeadline"></div>
+      <div class="form-group"><label class="form-label">Conta</label><select class="form-select" id="goalAccount"></select></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" id="cancelGoalBtn">Cancelar</button><button class="btn btn-primary" id="saveGoalBtn">Salvar</button></div>
+  </div>
+</div>
 
+<!-- Scripts -->
 <script src="js/config.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
@@ -289,14 +478,43 @@
 <script src="js/app.js"></script>
 
 <script>
+  // Sidebar Toggle (desktop)
   const sidebar = document.getElementById('sidebar');
   const sidebarToggle = document.getElementById('sidebarToggle');
+  
   if (sidebarToggle) {
     sidebarToggle.addEventListener('click', () => {
       sidebar.classList.toggle('collapsed');
       localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
     });
-    if (localStorage.getItem('sidebarCollapsed') === 'true') sidebar.classList.add('collapsed');
+    if (localStorage.getItem('sidebarCollapsed') === 'true') {
+      sidebar.classList.add('collapsed');
+    }
+  }
+  
+  // Menu Hambúrguer (mobile)
+  const hamburger = document.getElementById('hamburgerBtn');
+  
+  if (hamburger && sidebar) {
+    hamburger.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+    });
+    
+    document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 1024) {
+          sidebar.classList.remove('open');
+        }
+      });
+    });
+    
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 1024 && sidebar.classList.contains('open')) {
+        if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+          sidebar.classList.remove('open');
+        }
+      }
+    });
   }
 </script>
 </body>
